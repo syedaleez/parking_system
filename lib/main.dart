@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
         title: 'Parking System',
         theme: ThemeData(primarySwatch: Colors.blue),
         initialRoute: '/',
-        routes: {
+        routes: 
+         {
           '/login': (context) => SignInScreen(),
           // '/home': (context) => HomePage(), // Add home page navigation
         },

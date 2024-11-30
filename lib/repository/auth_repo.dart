@@ -3,7 +3,7 @@ class AuthRepository {
     // API mili to call hogi 
     await Future.delayed(const Duration(seconds: 2));
 
-    if (email == 'test@example.com' && password == 'password') {
+    if (email == 'abc@gmail.com' && password == 'password') {
       return true;  
     }
     return false;  
