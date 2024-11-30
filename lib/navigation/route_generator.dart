@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:parking_system/screens/dashboard/home_scree.dart';
 
 import '../screens/signIn_signUp/SignInScreen.dart';
+import '../screens/signIn_signUp/register_screen.dart';
 import '../screens/splash_scree.dart/splash.dart';
 
 class RouteGenerator {
@@ -12,6 +14,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SplashScreen());
       case '/login':
         return MaterialPageRoute(builder: (_) => SignInScreen());
+      case '/register':
+        return MaterialPageRoute(builder: (_) => RegistrationScreen());
+      case '/home':
+        return MaterialPageRoute(builder: (_) => homeScreen());
       // Example routes for other screens
       // case '/admin':
       //   return MaterialPageRoute(builder: (_) => AdminPanelScreen());
