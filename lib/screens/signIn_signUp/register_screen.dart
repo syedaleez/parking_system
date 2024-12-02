@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../cubit/register_cubit.dart';  // Ensure correct path
+import 'package:parking_system/cubit/auth_cubit.dart';
+import '../../cubit/register_cubit.dart'; // Ensure correct path
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -28,8 +29,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 content: Text('Registration Successful!'),
                 backgroundColor: Colors.green,
               ));
-              Navigator.pushReplacementNamed(context, '/home');  // Navigate to home
-            } else if (state is RegisterFailure) {
+              Navigator.pushReplacementNamed(
+                  context, '/home'); // Navigate to home
+                  
+            }
+            else if (state is AdminAuthenticated){
+              Navigator.pushReplacementNamed(context, '/admin_home');
+            }
+            
+             else if (state is RegisterFailure) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(state.errorMessage),
                 backgroundColor: Colors.red,
@@ -46,7 +54,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   decoration: InputDecoration(labelText: 'Full Name'),
                 ),
                 SizedBox(height: 10),
-                
+
                 // Email
                 TextField(
                   controller: _emailController,
@@ -54,7 +62,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   keyboardType: TextInputType.emailAddress,
                 ),
                 SizedBox(height: 10),
-                
+
                 // Password
                 TextField(
                   controller: _passwordController,
@@ -62,7 +70,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   obscureText: true,
                 ),
                 SizedBox(height: 10),
-                
+
                 // Phone Number
                 TextField(
                   controller: _phoneController,
@@ -70,14 +78,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   keyboardType: TextInputType.phone,
                 ),
                 SizedBox(height: 10),
-                
+
                 // State
                 TextField(
                   controller: _stateController,
                   decoration: InputDecoration(labelText: 'State'),
                 ),
                 SizedBox(height: 10),
-                
+
                 // Terms and Conditions Checkbox
                 Row(
                   children: [
@@ -94,45 +102,68 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                   ],
                 ),
-                
+
                 SizedBox(height: 20),
-                
+
                 // Register Button
                 BlocBuilder<RegisterCubit, RegisterState>(
                   builder: (context, state) {
-                    return ElevatedButton(
-                      onPressed: state is RegisterLoading ? null : () {
+                    return
+                        // ElevatedButton(
+                        //   onPressed: state is RegisterLoading ? null : () {
+                        //     final fullName = _fullNameController.text.trim();
+                        //     final email = _emailController.text.trim();
+                        //     final password = _passwordController.text.trim();
+                        //     final phoneNumber = _phoneController.text.trim();
+                        //     final stateInput = _stateController.text.trim();
+
+                        //     context.read<RegisterCubit>().register(
+                        //       fullName,
+                        //       email,
+                        //       password,
+                        //       phoneNumber,
+                        //       stateInput,
+                        //       _acceptedTerms,
+                        //     );
+                        //   },
+                        //   style: ElevatedButton.styleFrom(
+                        //     minimumSize: Size(double.infinity, 50),
+                        //     backgroundColor: Colors.blue,
+                        //   ),
+                        //   child: state is RegisterLoading
+                        //       ? CircularProgressIndicator(color: Colors.white)
+                        //       : Text(
+                        //           'Register',
+                        //           style: TextStyle(fontSize: 18, color: Colors.white),
+                        //         ),
+                        // );
+//firebase Elevated button
+
+                        ElevatedButton(
+                      onPressed: () {
                         final fullName = _fullNameController.text.trim();
                         final email = _emailController.text.trim();
                         final password = _passwordController.text.trim();
                         final phoneNumber = _phoneController.text.trim();
-                        final stateInput = _stateController.text.trim();
+                        final state = _stateController.text.trim();
 
                         context.read<RegisterCubit>().register(
-                          fullName,
-                          email,
-                          password,
-                          phoneNumber,
-                          stateInput,
-                          _acceptedTerms,
-                        );
+                              fullName,
+                              email,
+                              password,
+                              phoneNumber,
+                              state,
+                              _acceptedTerms, // Checkbox value
+                            );
+                            print('user registered');
                       },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(double.infinity, 50),
-                        backgroundColor: Colors.blue,
-                      ),
-                      child: state is RegisterLoading
-                          ? CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              'Register',
-                              style: TextStyle(fontSize: 18, color: Colors.white),
-                            ),
+                      child: const Text('Register'),
                     );
                   },
                 ),
-                
+
                 SizedBox(height: 10),
-                
+
                 // Sign In Link
                 Center(
                   child: TextButton(

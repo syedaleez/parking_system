@@ -17,21 +17,21 @@ class _SignInScreenState extends State<SignInScreen> {
   bool _rememberMe = false;
 
   @override
-void initState() {
-  super.initState();
-  _loadSavedCredentials();  // New method call
-  context.read<AuthCubit>().regenerateCaptcha();
-}
+  void initState() {
+    super.initState();
+    _loadSavedCredentials(); // New method call
+    context.read<AuthCubit>().regenerateCaptcha();
+  }
 
-void _loadSavedCredentials() async {
-  final prefs = await SharedPreferences.getInstance();
-  setState(() {
-    _emailController.text = prefs.getString('email') ?? '';
-    _passwordController.text = prefs.getString('password') ?? '';
-    _rememberMe = prefs.containsKey('email');  // Set checkbox based on saved data
-  });
-}
-
+  void _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _emailController.text = prefs.getString('email') ?? '';
+      _passwordController.text = prefs.getString('password') ?? '';
+      _rememberMe =
+          prefs.containsKey('email'); // Set checkbox based on saved data
+    });
+  }
 
   // void initState() {
   //   super.initState();
@@ -45,25 +45,48 @@ void _loadSavedCredentials() async {
       backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
-        child: BlocConsumer<AuthCubit, AuthState>(
-          listener: (context, state) {
-            if (state is AuthSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Login Successful!'),
-                  backgroundColor: Colors.green,
-                ),
-              );
-              Navigator.pushReplacementNamed(context, '/home');
-            } else if (state is AuthFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            }
-          },
+        child:
+            BlocConsumer<AuthCubit, AuthState>(
+            listener: (context, state) {
+              if (state is AuthSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Login Successful!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+                Navigator.pushReplacementNamed(context, '/home');
+              }
+              
+              else if(_emailController.text=='admin@gmail.com'){
+                Navigator.pushReplacementNamed(context, '/admin_home');
+              }
+               else if (state is AuthFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.errorMessage),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+//checkRole method wala
+
+          //   BlocConsumer<AuthCubit, AuthState>(
+          // listener: (context, state) {
+          //   if (state is AdminAuthenticated) {
+          //     Navigator.pushReplacementNamed(context, '/admin_home');
+          //   } else if (state is UserAuthenticated) {
+          //     Navigator.pushReplacementNamed(context, '/home');
+          //   } else if (state is AuthFailure) {
+          //     ScaffoldMessenger.of(context).showSnackBar(
+          //       SnackBar(
+          //         content: Text(state.errorMessage),
+          //         backgroundColor: Colors.red,
+          //       ),
+          //     );
+          //   }
+          // },
           builder: (context, state) {
             // Captcha value from state
             String captcha = (state is AuthInitial) ? state.captcha : '------';
@@ -148,11 +171,7 @@ void _loadSavedCredentials() async {
                               final password = _passwordController.text;
                               final captchaInput = _captchaController.text;
                               context.read<AuthCubit>().login(
-                                    email,
-                                    password,
-                                    captchaInput,
-                                    _rememberMe
-                                  );
+                                  email, password, captchaInput, _rememberMe);
                             },
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),

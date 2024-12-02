@@ -1,6 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:parking_system/cubit/admin_cubit.dart';
+import 'package:parking_system/cubit/user_cubit.dart';
+import 'package:parking_system/repository/admin_repo.dart';
+import 'package:parking_system/repository/user_repo.dart';
 import 'cubit/auth_cubit.dart';
 import 'cubit/register_cubit.dart';
 import 'navigation/route_generator.dart';
@@ -79,6 +83,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   final AuthRepository authRepository = AuthRepository();
+  // final UserRepository userRepository=UserRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +92,14 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthCubit>(
           create: (context) => AuthCubit(authRepository),
         ),
-        BlocProvider<RegisterCubit>(     // Update this to match RegisterState
+        BlocProvider<RegisterCubit>(     
           create: (context) => RegisterCubit(authRepository),
+        ),
+        BlocProvider<AdminCubit>(     
+          create: (context) => AdminCubit(AdminRepository()),
+        ),
+        BlocProvider<UserCubit>(     
+          create: (context) => UserCubit(UserRepository()),
         ),
       ],
       child: MaterialApp(
