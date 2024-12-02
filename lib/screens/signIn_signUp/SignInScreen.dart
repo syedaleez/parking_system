@@ -1,7 +1,6 @@
 ///newwwwwwwwwwwww
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking_system/cubit/register_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../cubit/auth_cubit.dart';
 
@@ -58,7 +57,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 Navigator.pushReplacementNamed(context, '/home');
               }
               
-              else if(_emailController.text=='admin@gmail.com'){
+              else if(_emailController.text=='admin@gmail.com'&& _passwordController.text=='11223344'){
                 Navigator.pushReplacementNamed(context, '/admin_home');
               }
                else if (state is AuthFailure) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parking_system/navigation/route_name.dart';
 import 'package:parking_system/screens/dashboard/admin_home.dart';
 import 'package:parking_system/screens/dashboard/home_scree.dart';
 
@@ -11,7 +12,7 @@ class RouteGenerator {
     final args = settings.arguments;
 
     switch (settings.name) {
-      case '/':
+      case splash:
         return MaterialPageRoute(builder: (_) => SplashScreen());
       case '/login':
         return MaterialPageRoute(builder: (_) => SignInScreen());
