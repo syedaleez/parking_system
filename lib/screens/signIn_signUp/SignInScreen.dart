@@ -32,43 +32,57 @@ class _SignInScreenState extends State<SignInScreen> {
     });
   }
 
-  // void initState() {
-  //   super.initState();
-  //   // Generate captcha when screen loads
-  //   context.read<AuthCubit>().regenerateCaptcha();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
-        child:
-            BlocConsumer<AuthCubit, AuthState>(
-            listener: (context, state) {
-              if (state is AuthSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Login Successful!'),
-                    backgroundColor: Colors.green,
+        child: BlocConsumer<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state is AuthSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Login Successful!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              Navigator.pushReplacementNamed(context, '/home');
+            } else if (_emailController.text == 'admin@gmail.com' &&
+                _passwordController.text == '11223344') {
+              Navigator.pushReplacementNamed(context, '/admin_home');
+            } else if (state is AuthFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Row(
+                    children: [
+                      Icon(
+                        Icons.error_outline, // Error icon for visual emphasis
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 10), // Space between icon and text
+                      Expanded(
+                        child: Text(
+                          state.errorMessage,
+                          style: TextStyle(
+                              fontSize: 16), // Larger text for readability
+                        ),
+                      ),
+                    ],
                   ),
-                );
-                Navigator.pushReplacementNamed(context, '/home');
-              }
-              
-              else if(_emailController.text=='admin@gmail.com'&& _passwordController.text=='11223344'){
-                Navigator.pushReplacementNamed(context, '/admin_home');
-              }
-               else if (state is AuthFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.errorMessage),
-                    backgroundColor: Colors.red,
+                  backgroundColor:
+                      Colors.red.shade700, // Deeper red for consistency
+                  behavior: SnackBarBehavior
+                      .floating, // Floating style for modern appearance
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                        10), // Rounded corners for aesthetics
                   ),
-                );
-              }
-            },
+                  duration: Duration(seconds: 4), // Display time
+                ),
+              );
+            }
+          },
 //checkRole method wala
 
           //   BlocConsumer<AuthCubit, AuthState>(
@@ -91,117 +105,175 @@ class _SignInScreenState extends State<SignInScreen> {
             String captcha = (state is AuthInitial) ? state.captcha : '------';
             return Center(
               child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Center(
-                      child: Text(
-                        'Sign In',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title with a modern font style and color
+                      const Center(
+                        child: Text(
+                          'Sign In',
+                          style: TextStyle(
+                            fontSize: 36, // Larger font size for visibility
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueAccent, // Primary color
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 40),
-                    TextField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Password',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: _captchaController,
-                      decoration: InputDecoration(
-                        labelText: 'Enter Captcha: $captcha',
-                        border: const OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<AuthCubit>().regenerateCaptcha();
-                      },
-                      child: const Text('Refresh Captcha'),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _rememberMe,
-                              onChanged: (value) {
-                                setState(() {
-                                  _rememberMe = value!;
-                                });
-                              },
-                            ),
-                            const Text('Remember Me'),
-                          ],
+                      const SizedBox(height: 40),
+
+                      // Email TextField
+                      TextField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          prefixIcon:
+                              Icon(Icons.email, color: Colors.blueAccent),
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(15), // Rounded corners
+                          ),
+                          filled: true,
+                          fillColor: Colors
+                              .grey[200], // Soft background color for input
                         ),
-                        TextButton(
-                          onPressed: () {
-                            // Forgot password logic
-                          },
-                          child: const Text('Forgot Password?'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: state is AuthLoading
-                          ? null
-                          : () {
-                              final email = _emailController.text;
-                              final password = _passwordController.text;
-                              final captchaInput = _captchaController.text;
-                              context.read<AuthCubit>().login(
-                                  email, password, captchaInput, _rememberMe);
-                            },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 50),
-                        backgroundColor: Colors.blue,
                       ),
-                      child: state is AuthLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
-                          : const Text(
-                              'Sign In',
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.white),
-                            ),
-                    ),
-                    const SizedBox(
-                      height: 9,
-                    ),
-                    Center(child: Text("Don't have an account?")),
-                    Center(
-                        child: TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/register');
-                            },
-                            child: const Text(
-                              'Register',
-                              style: TextStyle(
-                                fontSize: 16,
+                      const SizedBox(height: 20),
+
+                      // Password TextField
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          prefixIcon:
+                              Icon(Icons.lock, color: Colors.blueAccent),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Captcha TextField
+                      TextField(
+                        controller: _captchaController,
+                        decoration: InputDecoration(
+                          labelText: 'Enter Captcha: $captcha',
+                          prefixIcon:
+                              Icon(Icons.security, color: Colors.blueAccent),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Refresh Captcha Button
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<AuthCubit>().regenerateCaptcha();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.only(left: 4, right: 4),
+                            child: Text('Refresh Captcha',
+                                style: TextStyle(fontSize: 14)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Remember Me and Forgot Password Row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Checkbox(
+                                checkColor: Colors.white,
+                                activeColor: Colors.blueAccent,
+                                value: _rememberMe,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _rememberMe = value!;
+                                  });
+                                },
                               ),
-                            ))),
-                  ],
+                              const Text('Remember Me'),
+                            ],
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              // Forgot password logic
+                            },
+                            child: const Text('Forgot Password?',
+                                style: TextStyle(color: Colors.blueAccent)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Sign In Button
+                      ElevatedButton(
+                        onPressed: state is AuthLoading
+                            ? null
+                            : () {
+                                final email = _emailController.text;
+                                final password = _passwordController.text;
+                                final captchaInput = _captchaController.text;
+                                context.read<AuthCubit>().login(
+                                    email, password, captchaInput, _rememberMe);
+                              },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 50),
+                          backgroundColor: Colors.blueAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: state is AuthLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
+                            : const Text(
+                                'Sign In',
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white),
+                              ),
+                      ),
+                      const SizedBox(height: 9),
+
+                      // Register Option
+                      Center(child: Text("Don't have an account?")),
+                      Center(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/register');
+                          },
+                          child: const Text(
+                            'Register',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.blueAccent,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
