@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:parking_system/screens/custom_widges/custom_snackbar.dart';
+import 'package:parking_system/screens/custom_widges/custom_textfield.dart';
 import '../../cubit/admin_cubit.dart';
 import '../../states/admin_state.dart';
 // import '../cubit/admin_cubit.dart';
@@ -43,8 +45,14 @@ class _AdminHomeState extends State<AdminHome> {
                   backgroundColor: Colors.green),
             );
           } else if (state is ParkingLotCreationFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+            // );
+            CustomSnackBar.show(
+              context: context,
+              message: state.error,
+              backgroundColor: Colors.red,
+              icon: Icons.cancel,
             );
           }
         },
@@ -53,21 +61,30 @@ class _AdminHomeState extends State<AdminHome> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
+              // TextField(
+              //     controller: _nameController,
+              //     decoration: InputDecoration(labelText: 'Parking Lot Name')),
+              CustomTextField(
                   controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Parking Lot Name')),
-              TextField(
-                controller: _rankController,
-                decoration: InputDecoration(labelText: 'Rank'),
-                keyboardType: TextInputType.number,
-              ),
+                  labelText: 'Parking Lot Name',
+                  icon: Icons.local_parking_sharp),
+              // TextField(
+              //   controller: _rankController,
+              //   decoration: InputDecoration(labelText: 'Rank'),
+              //   keyboardType: TextInputType.number,
+              // ),
+              CustomTextField(
+                  controller: _rankController,
+                  labelText: 'Rank',
+                  icon: Icons.location_history_outlined),
+
               // TextField(
               //     controller: _capacityController,
               //     keyboardType: TextInputType.number,
               //     decoration: InputDecoration(labelText: 'Capacity')),
 
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 'Define Slots',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),

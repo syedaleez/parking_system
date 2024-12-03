@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+import '../cubit/auth_cubit.dart';
 
 class AuthRepository {
   // Future<bool> login(String email, String password) async {
@@ -14,6 +17,7 @@ class AuthRepository {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   // FirebaseAuth.instance.setLanguageCode("en");  // Set the desired locale
 
 
@@ -35,6 +39,26 @@ class AuthRepository {
       throw Exception('User not found');
     }
   }
+
+
+//function for google sign innn
+
+  Future<UserCredential> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) {
+      throw Exception("Google sign-in was canceled by the user");
+    }
+
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final OAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    return await _firebaseAuth.signInWithCredential(credential);
+  }
+
+
 
   Future<bool> login(String email, String password) async {
     try {

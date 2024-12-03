@@ -324,6 +324,21 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                       ),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          context.read<AuthCubit>().signInWithGoogle();
+                        },
+                        icon: const Icon(Icons.login, color: Colors.white),
+                        label: const Text(
+                          'Sign In with Google',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Colors.redAccent, // Google brand color
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                      ),
                     ],
                   ),
                 ),

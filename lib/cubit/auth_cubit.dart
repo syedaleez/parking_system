@@ -5,6 +5,7 @@
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../repository/auth_repo.dart';
 
@@ -74,6 +75,18 @@ class AuthCubit extends Cubit<AuthState> {
       regenerateCaptcha();  // Refresh captcha after an error
     }
   }
+
+
+ Future<void> signInWithGoogle() async {
+    emit(AuthLoading());
+    try {
+      await authRepository.signInWithGoogle();
+      emit(AuthSuccess());
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
+    }
+  }
+  
 
 }
 
