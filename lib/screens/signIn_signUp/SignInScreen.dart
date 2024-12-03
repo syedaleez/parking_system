@@ -1,8 +1,11 @@
 ///newwwwwwwwwwwww
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:parking_system/screens/custom_widges/custom_elevatedButton.dart';
+import 'package:parking_system/screens/custom_widges/custom_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../cubit/auth_cubit.dart';
+import '../custom_widges/custom_snackbar.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -41,45 +44,59 @@ class _SignInScreenState extends State<SignInScreen> {
         child: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is AuthSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Login Successful!'),
-                  backgroundColor: Colors.green,
-                ),
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   const SnackBar(
+              //     content: Text('Login Successful!'),
+              //     backgroundColor: Colors.green,
+              //   ),
+              // );
+
+              CustomSnackBar.show(
+                context: context,
+                message: 'Login Successful!',
+                backgroundColor: Colors.green,
+                icon: Icons.check_circle,
               );
               Navigator.pushReplacementNamed(context, '/home');
             } else if (_emailController.text == 'admin@gmail.com' &&
                 _passwordController.text == '11223344') {
               Navigator.pushReplacementNamed(context, '/admin_home');
             } else if (state is AuthFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Row(
-                    children: [
-                      Icon(
-                        Icons.error_outline, // Error icon for visual emphasis
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 10), // Space between icon and text
-                      Expanded(
-                        child: Text(
-                          state.errorMessage,
-                          style: TextStyle(
-                              fontSize: 16), // Larger text for readability
-                        ),
-                      ),
-                    ],
-                  ),
-                  backgroundColor:
-                      Colors.red.shade700, // Deeper red for consistency
-                  behavior: SnackBarBehavior
-                      .floating, // Floating style for modern appearance
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        10), // Rounded corners for aesthetics
-                  ),
-                  duration: Duration(seconds: 4), // Display time
-                ),
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   SnackBar(
+              //     content: Row(
+              //       children: [
+              //         Icon(
+              //           Icons.error_outline, // Error icon for visual emphasis
+              //           color: Colors.white,
+              //         ),
+              //         SizedBox(width: 10), // Space between icon and text
+              //         Expanded(
+              //           child: Text(
+              //             state.errorMessage,
+              //             style: TextStyle(
+              //                 fontSize: 16), // Larger text for readability
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //     backgroundColor:
+              //         Colors.red.shade700, // Deeper red for consistency
+              //     behavior: SnackBarBehavior
+              //         .floating, // Floating style for modern appearance
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(
+              //           10), // Rounded corners for aesthetics
+              //     ),
+              //     duration: Duration(seconds: 4), // Display time
+              //   ),
+              // );
+
+              CustomSnackBar.show(
+                context: context,
+                message: 'Fill all fields correctly',
+                backgroundColor: Colors.red,
+                icon: Icons.cancel,
               );
             }
           },
@@ -101,6 +118,8 @@ class _SignInScreenState extends State<SignInScreen> {
           //   }
           // },
           builder: (context, state) {
+            bool isLoading = state is AuthLoading;
+
             // Captcha value from state
             String captcha = (state is AuthInitial) ? state.captcha : '------';
             return Center(
@@ -160,41 +179,59 @@ class _SignInScreenState extends State<SignInScreen> {
                       const SizedBox(height: 20),
 
                       // Captcha TextField
-                      TextField(
+                      // TextField(
+                      //   controller: _captchaController,
+                      //   decoration: InputDecoration(
+                      //     labelText: 'Enter Captcha: $captcha',
+                      //     prefixIcon:
+                      //         Icon(Icons.security, color: Colors.blueAccent),
+                      //     border: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(15),
+                      //     ),
+                      //     filled: true,
+                      //     fillColor: Colors.grey[200],
+                      //   ),
+                      // ),
+
+                      CustomTextField(
                         controller: _captchaController,
-                        decoration: InputDecoration(
-                          labelText: 'Enter Captcha: $captcha',
-                          prefixIcon:
-                              Icon(Icons.security, color: Colors.blueAccent),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                        ),
+                        labelText: 'Enter Captcha: $captcha ',
+                        icon: Icons.security,
+                        keyboardType: TextInputType.phone,
                       ),
+
                       const SizedBox(height: 10),
 
                       // Refresh Captcha Button
-                      ElevatedButton(
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     context.read<AuthCubit>().regenerateCaptcha();
+                      //   },
+                      //   style: ElevatedButton.styleFrom(
+                      //     backgroundColor: Colors.blueAccent,
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(15),
+                      //     ),
+                      //     padding: const EdgeInsets.symmetric(vertical: 12),
+                      //   ),
+                      //   child: Center(
+                      //     child: Container(
+                      //       padding: EdgeInsets.only(left: 4, right: 4),
+                      //       child: Text('Refresh Captcha',
+                      //           style: TextStyle(fontSize: 14)),
+                      //     ),
+                      //   ),
+                      // ),
+
+                      CustomElevatedButton(
                         onPressed: () {
                           context.read<AuthCubit>().regenerateCaptcha();
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                        ),
-                        child: Center(
-                          child: Container(
-                            padding: EdgeInsets.only(left: 4, right: 4),
-                            child: Text('Refresh Captcha',
-                                style: TextStyle(fontSize: 14)),
-                          ),
-                        ),
+                        text: 'Refresh Captcha',
+                        fontSize: 14,
+                        // textColor: const Color.fromARGB(255, 236, 228, 228),
                       ),
+
                       const SizedBox(height: 20),
 
                       // Remember Me and Forgot Password Row
@@ -228,36 +265,52 @@ class _SignInScreenState extends State<SignInScreen> {
                       const SizedBox(height: 20),
 
                       // Sign In Button
-                      ElevatedButton(
-                        onPressed: state is AuthLoading
-                            ? null
-                            : () {
-                                final email = _emailController.text;
-                                final password = _passwordController.text;
-                                final captchaInput = _captchaController.text;
-                                context.read<AuthCubit>().login(
-                                    email, password, captchaInput, _rememberMe);
-                              },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                          backgroundColor: Colors.blueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                        child: state is AuthLoading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white)
-                            : const Text(
-                                'Sign In',
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.white),
-                              ),
+                      // ElevatedButton(
+                      //   onPressed: state is AuthLoading
+                      //       ? null
+                      //       : () {
+                      //           final email = _emailController.text;
+                      //           final password = _passwordController.text;
+                      //           final captchaInput = _captchaController.text;
+                      //           context.read<AuthCubit>().login(
+                      //               email, password, captchaInput, _rememberMe);
+                      //         },
+                      //   style: ElevatedButton.styleFrom(
+                      //     minimumSize: const Size(double.infinity, 50),
+                      //     backgroundColor: Colors.blueAccent,
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(15),
+                      //     ),
+                      //   ),
+                      //   child: state is AuthLoading
+                      //       ? const CircularProgressIndicator(
+                      //           color: Colors.white)
+                      //       : const Text(
+                      //           'Sign In',
+                      //           style: TextStyle(
+                      //               fontSize: 18, color: Colors.white),
+                      //         ),
+                      // ),
+
+                      CustomElevatedButton(
+                        onPressed: () {
+                          final email = _emailController.text;
+                          final password = _passwordController.text;
+                          final captchaInput = _captchaController.text;
+
+                          // Call the login function from your Cubit
+                          context.read<AuthCubit>().login(
+                              email, password, captchaInput, _rememberMe);
+                        },
+                        text: 'Sign In',
+                        isLoading:
+                            isLoading, // Pass the loading state dynamically
                       ),
+
                       const SizedBox(height: 9),
 
                       // Register Option
-                      Center(child: Text("Don't have an account?")),
+                      const Center(child: Text("Don't have an account?")),
                       Center(
                         child: TextButton(
                           onPressed: () {
@@ -266,7 +319,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           child: const Text(
                             'Register',
                             style: TextStyle(
-                              fontSize: 16,
                               color: Colors.blueAccent,
                             ),
                           ),

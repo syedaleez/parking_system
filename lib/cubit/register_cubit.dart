@@ -28,7 +28,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     if (!acceptedTerms) {
       emit(RegisterFailure('You must accept the terms and conditions to register.'));
       return;
-    }
+    } 
     emit(RegisterLoading());
     try {
       await authRepository.register(fullName, email, password, phoneNumber, state);

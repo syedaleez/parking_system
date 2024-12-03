@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking_system/cubit/auth_cubit.dart';
+import 'package:parking_system/screens/custom_widges/custom_snackbar.dart';
+import 'package:parking_system/screens/custom_widges/custom_textfield.dart';
 import '../../cubit/register_cubit.dart'; // Ensure correct path
 
 class RegistrationScreen extends StatefulWidget {
@@ -15,6 +17,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _phoneController = TextEditingController();
   final _stateController = TextEditingController();
   bool _acceptedTerms = false;
+  String? _selectedState;
+  final List<String> states = [
+    'Calafornia',
+    'Texas',
+    'New York',
+    'Florida',
+    'Arizona',
+    'Ohio',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -25,23 +36,29 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         child: BlocListener<RegisterCubit, RegisterState>(
           listener: (context, state) {
             if (state is RegisterSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('Registration Successful!'),
+              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              //   content: Text('Registration Successful!'),
+              //   backgroundColor: Colors.green,
+              // ));
+
+              CustomSnackBar.show(
+                context: context,
+                message: 'Registration Successful!',
                 backgroundColor: Colors.green,
-              ));
+                icon: Icons.check_circle,
+              );
+
               Navigator.pushReplacementNamed(
                   context, '/home'); // Navigate to home
-                  
-            }
-            else if (state is AdminAuthenticated){
+            } else if (state is AdminAuthenticated) {
               Navigator.pushReplacementNamed(context, '/admin_home');
-            }
-            
-             else if (state is RegisterFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(state.errorMessage),
+            } else if (state is RegisterFailure) {
+              CustomSnackBar.show(
+                context: context,
+                message: 'Registration Failed!',
                 backgroundColor: Colors.red,
-              ));
+                icon: Icons.cancel,
+              );
             }
           },
           child: SingleChildScrollView(
@@ -49,41 +66,72 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Full Name
-                TextField(
-                  controller: _fullNameController,
-                  decoration: InputDecoration(labelText: 'Full Name'),
-                ),
+                // TextField(
+                //   controller: _fullNameController,
+                //   decoration: InputDecoration(labelText: 'Full Name'),
+                // ),
+
+                CustomTextField(
+                    controller: _fullNameController,
+                    labelText: 'Full Name',
+                    icon: Icons.person),
                 SizedBox(height: 10),
 
-                // Email
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
-                  keyboardType: TextInputType.emailAddress,
-                ),
+                CustomTextField(
+                    controller: _emailController,
+                    labelText: 'Email',
+                    icon: Icons.email),
                 SizedBox(height: 10),
 
-                // Password
-                TextField(
+                CustomTextField(
                   controller: _passwordController,
-                  decoration: InputDecoration(labelText: 'Password'),
+                  labelText: 'Password',
+                  icon: Icons.password,
                   obscureText: true,
                 ),
+
                 SizedBox(height: 10),
 
-                // Phone Number
-                TextField(
+                CustomTextField(
                   controller: _phoneController,
-                  decoration: InputDecoration(labelText: 'Phone Number'),
+                  labelText: 'Phone Number',
+                  icon: Icons.phone,
                   keyboardType: TextInputType.phone,
                 ),
                 SizedBox(height: 10),
 
                 // State
-                TextField(
-                  controller: _stateController,
-                  decoration: InputDecoration(labelText: 'State'),
-                ),
+                // TextField(
+                //   controller: _stateController,
+                //   decoration: InputDecoration(labelText: 'State'),
+                // ),
+
+// DropdownMenu(dropdownMenuEntries: dropdownMenuEntries)
+                DropdownButtonFormField<String>(
+                    value: _selectedState,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedState = value;
+                      });
+                    },
+                    items: states.map((state) {
+                      return DropdownMenuItem<String>(
+                        value: state,
+                        child: Text(state),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                      labelText: 'State',
+                      fillColor: const Color.fromARGB(255, 199, 185, 185),
+                      prefixIcon:
+                          Icon(Icons.location_city, color: Colors.blueAccent),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+
+                        // hint: Text('Select a state'),
+                      ),
+                    )),
+
                 SizedBox(height: 10),
 
                 // Terms and Conditions Checkbox
@@ -137,7 +185,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         //           style: TextStyle(fontSize: 18, color: Colors.white),
                         //         ),
                         // );
-//firebase Elevated button
+                        //firebase Elevated button
 
                         ElevatedButton(
                       onPressed: () {
@@ -145,7 +193,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         final email = _emailController.text.trim();
                         final password = _passwordController.text.trim();
                         final phoneNumber = _phoneController.text.trim();
-                        final state = _stateController.text.trim();
+                        final state = _selectedState.toString();
 
                         context.read<RegisterCubit>().register(
                               fullName,
@@ -155,7 +203,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               state,
                               _acceptedTerms, // Checkbox value
                             );
-                            print('user registered');
+                        print('user registered');
                       },
                       child: const Text('Register'),
                     );
