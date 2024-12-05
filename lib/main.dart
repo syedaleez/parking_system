@@ -6,6 +6,7 @@ import 'package:parking_system/cubit/user_cubit.dart';
 import 'package:parking_system/repository/admin_repo.dart';
 import 'package:parking_system/repository/user_repo.dart';
 import 'cubit/auth_cubit.dart';
+import 'cubit/parking_cubit.dart';
 import 'cubit/register_cubit.dart';
 import 'navigation/route_generator.dart';
 import 'repository/auth_repo.dart';
@@ -100,6 +101,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<UserCubit>(     
           create: (context) => UserCubit(UserRepository()),
+        ),
+        BlocProvider<ParkingCubit>(     
+          create: (context) => ParkingCubit(),
         ),
       ],
       child: MaterialApp(

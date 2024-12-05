@@ -5,6 +5,7 @@ import 'package:parking_system/screens/custom_widges/custom_elevatedButton.dart'
 import 'package:parking_system/screens/custom_widges/custom_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../cubit/auth_cubit.dart';
+import '../../cubit/parking_cubit.dart';
 import '../custom_widges/custom_snackbar.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -50,6 +51,8 @@ class _SignInScreenState extends State<SignInScreen> {
               //     backgroundColor: Colors.green,
               //   ),
               // );
+                    context.read<ParkingCubit>().fetchParkingSlots();
+
 
               CustomSnackBar.show(
                 context: context,
