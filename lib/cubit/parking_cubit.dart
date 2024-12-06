@@ -11,73 +11,77 @@ class ParkingLoading extends ParkingState {}
 
 class ParkingLoaded extends ParkingState {
   final List<ParkingSlot> parkingSlots;
+  //
 
   ParkingLoaded(this.parkingSlots);
 }
 
+class BookedSlotsLoaded extends ParkingState {
+  // New State
+  final List<ParkingSlot> bookedSlots;
+  BookedSlotsLoaded(this.bookedSlots);
+  //  final ParkingRepository parkingRepository;
+}
+
 class ParkingError extends ParkingState {
   final String errorMessage;
-  
+
   ParkingError(this.errorMessage);
 }
 
 class ParkingCubit extends Cubit<ParkingState> {
   ParkingCubit() : super(ParkingLoading());
 
-  // Fetch parking slots from API
-  // Future<void> fetchParkingSlots() async {
-  //   try {
-  //     final response = await http.get(Uri.parse('http://192.168.10.23:5005/parking_lot/status'));
+  // function to get APi in the UI
+  Future<void> fetchParkingSlots() async {
+    try {
+      // Sending the HTTP request with a timeout of 30 seconds
+      final response = await http
+          .get(Uri.parse('http://192.168.10.23:5005/parking_lot/status'))
+          .timeout(Duration(seconds: 15));
 
-  //     if (response.statusCode == 200) {
-  //       final List<dynamic> data = json.decode(response.body);
-  //       List<ParkingSlot> slots = data.map((json) => ParkingSlot.fromJson(json)).toList();
-  //       emit(ParkingLoaded(slots));
-  //     } else {
-  //       emit(ParkingError('Failed to load parking slots'));
-  //     }
-  //   } catch (e) {
-  //     emit(ParkingError(e.toString()));
-  //   }
-  // }
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
 
-
-
-Future<void> fetchParkingSlots() async {
-  try {
-    // Sending the HTTP request with a timeout of 30 seconds
-    final response = await http.get(Uri.parse('http://192.168.10.23:5005/parking_lot/status'))
-        .timeout(Duration(seconds: 30));
-
-    if (response.statusCode == 200) {
-      // Decode the JSON response
-      final data = json.decode(response.body);
-
-      // Check if the 'data' key exists and is a list
-      if (data['data'] is List) {
-        // Map the list of JSON objects to a list of ParkingSlot objects
-        List<ParkingSlot> slots = (data['data'] as List)
-            .map((json) => ParkingSlot.fromJson(json))
-            .toList();
-        emit(ParkingLoaded(slots));  // Emit the loaded slots state
+        if (data['data'] is List) {
+          List<ParkingSlot> slots = (data['data'] as List)
+              .map((json) => ParkingSlot.fromJson(json))
+              .toList();
+          emit(ParkingLoaded(slots)); // Emit the loaded slots state
+        } else {
+          emit(ParkingError('format og data is wrong'));
+        }
       } else {
-        // If the 'data' field is not in the expected format
-        emit(ParkingError('Data is not in the expected format'));
+        emit(ParkingError(
+            'Failed to load parking slots... Status code: ${response.statusCode}'));
       }
-    } else {
-      // Handle unsuccessful response
-      emit(ParkingError('Failed to load parking slots. Status code: ${response.statusCode}'));
+    } catch (e) {
+      //error ko String mai convert karo
+      emit(ParkingError('Error: ${e.toString()}'));
     }
-  } catch (e) {
-    // Catch any exception (e.g., network error, timeout) and emit error state
-    emit(ParkingError('Error: ${e.toString()}'));
+
+    // Future<void> fetchBookedSlots() async {
+    //   emit(ParkingLoading());
+    //   try {
+    //     final bookedSlots = await parkingRepository.getBookedSlots();  // Call method from repository
+    //     emit(ParkingLoaded(bookedSlots));  // Assuming you use the same state to show booked slots
+    //   } catch (e) {
+    //     emit(ParkingError('Failed to load booked slots: ${e.toString()}'));
+    //   }
+    // }
   }
-}
+//method for fetching slots that are vooked
 
-
-
-
-
+  Future<void> fetchBookedSlots(dynamic parkingRepository) async {
+    emit(ParkingLoading());
+    try {
+      final bookedSlots =
+          await parkingRepository.getBookedSlots(); // New API call method
+      emit(BookedSlotsLoaded(bookedSlots));
+    } catch (e) {
+      emit(ParkingError('Failed to load booked slots: ${e.toString()}'));
+    }
+  }
 
   // Book a parking slot
   Future<void> bookSlot(ParkingSlot slot) async {
@@ -88,9 +92,10 @@ Future<void> fetchParkingSlots() async {
     await Future.delayed(Duration(seconds: 1)); // Simulate a delay
 
     // Emit the updated state with the slot being reserved
-    emit(ParkingLoaded(List.from(state is ParkingLoaded ? (state as ParkingLoaded).parkingSlots : [])
-        ..removeWhere((s) => s.id == slot.id)
-        ..add(updatedSlot)));
+    emit(ParkingLoaded(List.from(
+        state is ParkingLoaded ? (state as ParkingLoaded).parkingSlots : [])
+      ..removeWhere((s) => s.id == slot.id)
+      ..add(updatedSlot)));
   }
 }
 

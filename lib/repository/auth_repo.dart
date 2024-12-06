@@ -20,26 +20,26 @@ class AuthRepository {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   // FirebaseAuth.instance.setLanguageCode("en");  // Set the desired locale
 
-
   //check role for admin aur userr
 
   Future<String> checkRole(String email) async {
     // Fetch user data based on their email
-    final querySnapshot = await _firestore
+    final querySnapshot = await FirebaseFirestore.instance
         .collection('users')
-        .where('email', isEqualTo: 'admin@gmail.com')
+        .where('email', isEqualTo: email)
         .limit(1)
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
       final userData = querySnapshot.docs.first.data();
-      return userData['role'] ??
-          'user'; // Default to 'user' if role is not specified
+      if (email == 'admin@gmail.com') {
+        return 'admin';
+      }
+      return userData['role'] ?? 'user';
     } else {
       throw Exception('User not found');
     }
   }
-
 
 //function for google sign innn
 
@@ -49,7 +49,8 @@ class AuthRepository {
       throw Exception("Google sign-in was canceled by the user");
     }
 
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
     final OAuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -57,8 +58,6 @@ class AuthRepository {
 
     return await _firebaseAuth.signInWithCredential(credential);
   }
-
-
 
   Future<bool> login(String email, String password) async {
     try {

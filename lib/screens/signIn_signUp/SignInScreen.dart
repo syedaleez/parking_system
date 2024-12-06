@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking_system/screens/custom_widges/custom_elevatedButton.dart';
 import 'package:parking_system/screens/custom_widges/custom_textfield.dart';
+import 'package:parking_system/screens/dashboard/admin_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../cubit/auth_cubit.dart';
 import '../../cubit/parking_cubit.dart';
@@ -45,14 +46,7 @@ class _SignInScreenState extends State<SignInScreen> {
         child: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is AuthSuccess) {
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   const SnackBar(
-              //     content: Text('Login Successful!'),
-              //     backgroundColor: Colors.green,
-              //   ),
-              // );
-                    context.read<ParkingCubit>().fetchParkingSlots();
-
+              context.read<ParkingCubit>().fetchParkingSlots();
 
               CustomSnackBar.show(
                 context: context,
@@ -60,11 +54,24 @@ class _SignInScreenState extends State<SignInScreen> {
                 backgroundColor: Colors.green,
                 icon: Icons.check_circle,
               );
+
               Navigator.pushReplacementNamed(context, '/home');
-            } else if (_emailController.text == 'admin@gmail.com' &&
-                _passwordController.text == '11223344') {
-              Navigator.pushReplacementNamed(context, '/admin_home');
-            } else if (state is AuthFailure) {
+            } else if (state is AdminAuthenticated) {
+              print('enter hogya inside AdminAuth');
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => AdminHome()));
+              // Navigator.pushNamed(context, '/admin_home');
+
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => AdminHome()));
+            }
+            //}
+            // else if (_emailController.text == 'admin@gmail.com' &&
+            //     _passwordController.text == '11223344') {
+            //   Navigator.pushNamed(context, '/admin_home');
+            // }
+
+            else if (state is AuthFailure) {
               // ScaffoldMessenger.of(context).showSnackBar(
               //   SnackBar(
               //     content: Row(
@@ -120,6 +127,7 @@ class _SignInScreenState extends State<SignInScreen> {
           //     );
           //   }
           // },
+
           builder: (context, state) {
             bool isLoading = state is AuthLoading;
 
@@ -302,8 +310,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           final captchaInput = _captchaController.text;
 
                           // Call the login function from your Cubit
-                          context.read<AuthCubit>().login(
-                              email, password, captchaInput, _rememberMe);
+                          context.read<AuthCubit>().login(context, email,
+                              password, captchaInput, _rememberMe);
                         },
                         text: 'Sign In',
                         isLoading:
