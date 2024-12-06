@@ -9,6 +9,11 @@ class ParkingState {}
 
 class ParkingLoading extends ParkingState {}
 
+class ParkingSuccess extends ParkingState {
+  final String message;
+  ParkingSuccess(this.message);
+}
+
 class ParkingLoaded extends ParkingState {
   final List<ParkingSlot> parkingSlots;
   //
@@ -96,6 +101,33 @@ class ParkingCubit extends Cubit<ParkingState> {
         state is ParkingLoaded ? (state as ParkingLoaded).parkingSlots : [])
       ..removeWhere((s) => s.id == slot.id)
       ..add(updatedSlot)));
+  }
+
+  Future<void> postVehicleData(
+      int slotId, String plateNumber, int vehicleSizeId) async {
+    try {
+      emit(ParkingLoading());
+
+      final response = await http.post(
+        Uri.parse('http://192.168.10.23:5005/vehicle/park'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'vehicleSizeId': vehicleSizeId,
+          'plateNumber': plateNumber,
+          'parkingLotId': slotId,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        print('@@@@@@@vehicle parked successfullyyyy');
+        emit(ParkingSuccess('Vehicle parked successfully'));
+        fetchParkingSlots();
+      } else {
+        emit(ParkingError('Failed to park vehicle'));
+      }
+    } catch (e) {
+      emit(ParkingError('Error parking vehicle: $e'));
+    }
   }
 }
 
