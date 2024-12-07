@@ -69,6 +69,28 @@ class AuthRepository {
     }
   }
 
+  //check user detail exist in firestore while registerrrr
+
+  Future<bool> checkUserExists(String userId) async {
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return userDoc.exists;
+  }
+
+  Future<void> saveUserDetails(
+      String userId, Map<String, dynamic> userDetails) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .set(userDetails);
+  }
+
+  // Future<Map<String, dynamic>?> getUserDetails(String userId) async {
+  //   final userDoc =
+  //       await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  //   return userDoc.exists ? userDoc.data() : null;
+  // }
+
   Future<void> logout() async {
     await _firebaseAuth.signOut();
   }

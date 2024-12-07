@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking_system/screens/custom_widges/custom_elevatedButton.dart';
 import 'package:parking_system/screens/custom_widges/custom_textfield.dart';
-import 'package:parking_system/screens/dashboard/admin_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../cubit/auth_cubit.dart';
 import '../../cubit/parking_cubit.dart';
 import '../custom_widges/custom_snackbar.dart';
+import 'google_signin_form.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -45,6 +45,16 @@ class _SignInScreenState extends State<SignInScreen> {
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
+//new for additional details
+            if (state is AuthAdditionalDetailsRequired) {
+              showAdditionalDetailsForm(context, state.userId);
+            } else if (state is AuthFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.errorMessage)),
+              );
+            }
+//end hereeeeeeeeeeee
+
             if (state is AuthSuccess) {
               context.read<ParkingCubit>().fetchParkingSlots();
 
@@ -56,54 +66,9 @@ class _SignInScreenState extends State<SignInScreen> {
               );
 
               Navigator.pushReplacementNamed(context, '/home');
-              _emailController.clear();
-              _passwordController.clear();
             } else if (state is AdminAuthenticated) {
               print('enter hogya inside AdminAuth');
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (context) => AdminHome()));
-              // Navigator.pushNamed(context, '/admin_home');
-
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (context) => AdminHome()));
-            }
-            //}
-            // else if (_emailController.text == 'admin@gmail.com' &&
-            //     _passwordController.text == '11223344') {
-            //   Navigator.pushNamed(context, '/admin_home');
-            // }
-
-            else if (state is AuthFailure) {
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   SnackBar(
-              //     content: Row(
-              //       children: [
-              //         Icon(
-              //           Icons.error_outline, // Error icon for visual emphasis
-              //           color: Colors.white,
-              //         ),
-              //         SizedBox(width: 10), // Space between icon and text
-              //         Expanded(
-              //           child: Text(
-              //             state.errorMessage,
-              //             style: TextStyle(
-              //                 fontSize: 16), // Larger text for readability
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //     backgroundColor:
-              //         Colors.red.shade700, // Deeper red for consistency
-              //     behavior: SnackBarBehavior
-              //         .floating, // Floating style for modern appearance
-              //     shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(
-              //           10), // Rounded corners for aesthetics
-              //     ),
-              //     duration: Duration(seconds: 4), // Display time
-              //   ),
-              // );
-
+            } else if (state is AuthFailure) {
               CustomSnackBar.show(
                 context: context,
                 message: 'Fill all fields correctly',
@@ -113,22 +78,6 @@ class _SignInScreenState extends State<SignInScreen> {
             }
           },
 //checkRole method wala
-
-          //   BlocConsumer<AuthCubit, AuthState>(
-          // listener: (context, state) {
-          //   if (state is AdminAuthenticated) {
-          //     Navigator.pushReplacementNamed(context, '/admin_home');
-          //   } else if (state is UserAuthenticated) {
-          //     Navigator.pushReplacementNamed(context, '/home');
-          //   } else if (state is AuthFailure) {
-          //     ScaffoldMessenger.of(context).showSnackBar(
-          //       SnackBar(
-          //         content: Text(state.errorMessage),
-          //         backgroundColor: Colors.red,
-          //       ),
-          //     );
-          //   }
-          // },
 
           builder: (context, state) {
             bool isLoading = state is AuthLoading;
@@ -191,21 +140,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Captcha TextField
-                      // TextField(
-                      //   controller: _captchaController,
-                      //   decoration: InputDecoration(
-                      //     labelText: 'Enter Captcha: $captcha',
-                      //     prefixIcon:
-                      //         Icon(Icons.security, color: Colors.blueAccent),
-                      //     border: OutlineInputBorder(
-                      //       borderRadius: BorderRadius.circular(15),
-                      //     ),
-                      //     filled: true,
-                      //     fillColor: Colors.grey[200],
-                      //   ),
-                      // ),
-
                       CustomTextField(
                         controller: _captchaController,
                         labelText: 'Enter Captcha: $captcha ',
@@ -214,27 +148,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
 
                       const SizedBox(height: 10),
-
-                      // Refresh Captcha Button
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     context.read<AuthCubit>().regenerateCaptcha();
-                      //   },
-                      //   style: ElevatedButton.styleFrom(
-                      //     backgroundColor: Colors.blueAccent,
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(15),
-                      //     ),
-                      //     padding: const EdgeInsets.symmetric(vertical: 12),
-                      //   ),
-                      //   child: Center(
-                      //     child: Container(
-                      //       padding: EdgeInsets.only(left: 4, right: 4),
-                      //       child: Text('Refresh Captcha',
-                      //           style: TextStyle(fontSize: 14)),
-                      //     ),
-                      //   ),
-                      // ),
 
                       CustomElevatedButton(
                         onPressed: () {
@@ -276,34 +189,6 @@ class _SignInScreenState extends State<SignInScreen> {
                         ],
                       ),
                       const SizedBox(height: 20),
-
-                      // Sign In Button
-                      // ElevatedButton(
-                      //   onPressed: state is AuthLoading
-                      //       ? null
-                      //       : () {
-                      //           final email = _emailController.text;
-                      //           final password = _passwordController.text;
-                      //           final captchaInput = _captchaController.text;
-                      //           context.read<AuthCubit>().login(
-                      //               email, password, captchaInput, _rememberMe);
-                      //         },
-                      //   style: ElevatedButton.styleFrom(
-                      //     minimumSize: const Size(double.infinity, 50),
-                      //     backgroundColor: Colors.blueAccent,
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(15),
-                      //     ),
-                      //   ),
-                      //   child: state is AuthLoading
-                      //       ? const CircularProgressIndicator(
-                      //           color: Colors.white)
-                      //       : const Text(
-                      //           'Sign In',
-                      //           style: TextStyle(
-                      //               fontSize: 18, color: Colors.white),
-                      //         ),
-                      // ),
 
                       CustomElevatedButton(
                         onPressed: () {

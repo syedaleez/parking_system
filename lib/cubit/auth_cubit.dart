@@ -97,7 +97,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:parking_system/cubit/user_cubit.dart';
-import 'package:parking_system/screens/dashboard/admin_home.dart';
+// import 'package:parking_system/screens/dashboard/admin_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../repository/auth_repo.dart';
 // import 'parking_cubit.dart';
@@ -113,6 +113,17 @@ class AuthInitial extends AuthState {
 class AuthLoading extends AuthState {}
 
 class AuthSuccess extends AuthState {}
+
+class AuthAdditionalDetailsRequired extends AuthState {
+  final String userId;
+  AuthAdditionalDetailsRequired(this.userId);
+}
+
+class AuthProfileLoaded extends AuthState {
+  final Map<String, dynamic> userData;
+
+  AuthProfileLoaded(this.userData);
+}
 
 class AuthFailure extends AuthState {
   final String errorMessage;
@@ -178,22 +189,7 @@ class AuthCubit extends Cubit<AuthState> {
           prefs.setString('email', email);
           prefs.setString('password', password);
         }
-        // Fetch and load the user profile
-        //  context.read<UserCubit>().fetchUserProfile();
-
-        // Retrieve the current user's ID and fetch their profile
-        // final userId = FirebaseAuth
-        //     .instance.currentUser?.uid; // Get the userId from Firebase
-        // if (userId != null) {
-        //   await userCubit.fetchUserProfile();
-        //   print('profile milgyi');
-        //   emit(AuthSuccess());
-        // } else {
-        //   print('@@@@@@@@@@@@@@@${e.toString()}');
-        //   emit(AuthFailure('Failed to retrieve user ID'));
-        // }
-        // Fetch user data after successful login
-        // await userCubit.fetchUserProfile(); // **Updated**
+        //
 
         // Fetch user profile after login using context
         final userId = FirebaseAuth.instance.currentUser?.uid;
@@ -218,10 +214,43 @@ class AuthCubit extends Cubit<AuthState> {
     await _firebaseAuth.signOut();
   }
 
+  // Future<void> signInWithGoogle() async {
+  //   // emit(AuthLoading());
+  //   try {
+  //     await authRepository.signInWithGoogle();
+  //     emit(AuthSuccess());
+  //   } catch (e) {
+  //     emit(AuthFailure(e.toString()));
+  //   }
+  // }
+
   Future<void> signInWithGoogle() async {
-    // emit(AuthLoading());
+    emit(AuthLoading());
     try {
-      await authRepository.signInWithGoogle();
+      final userCredential = await authRepository.signInWithGoogle();
+      // final userId = userCredential.user!.uid;
+      // // final  userDetails=   Map userDetails;
+      // final userData = await authRepository.getUserDetails(userId);
+
+      // Check if additional user details are required
+      final userExists =
+          await authRepository.checkUserExists(userCredential.user!.uid);
+
+      if (!userExists) {
+        emit(AuthAdditionalDetailsRequired(userCredential.user!.uid));
+      } else {
+        emit(AuthSuccess());
+      }
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
+    }
+  }
+
+  Future<void> saveAdditionalDetails(
+      String userId, Map<String, dynamic> userDetails) async {
+    emit(AuthLoading());
+    try {
+      await authRepository.saveUserDetails(userId, userDetails);
       emit(AuthSuccess());
     } catch (e) {
       emit(AuthFailure(e.toString()));
