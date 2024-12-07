@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -65,16 +68,6 @@ class ParkingCubit extends Cubit<ParkingState> {
       //error ko String mai convert karo
       emit(ParkingError('Error: ${e.toString()}'));
     }
-
-    // Future<void> fetchBookedSlots() async {
-    //   emit(ParkingLoading());
-    //   try {
-    //     final bookedSlots = await parkingRepository.getBookedSlots();  // Call method from repository
-    //     emit(ParkingLoaded(bookedSlots));  // Assuming you use the same state to show booked slots
-    //   } catch (e) {
-    //     emit(ParkingError('Failed to load booked slots: ${e.toString()}'));
-    //   }
-    // }
   }
 //method for fetching slots that are vooked
 
@@ -90,19 +83,72 @@ class ParkingCubit extends Cubit<ParkingState> {
   }
 
   // Book a parking slot
-  Future<void> bookSlot(ParkingSlot slot) async {
-    // Update the slot's reservation status (could be a network request to update on the server)
-    final updatedSlot = slot.copyWith(isReserved: true);
+  // Future<void> bookSlot(ParkingSlot slot) async {
+  //   // Update the slot's reservation status (could be a network request to update on the server)
+  //   final updatedSlot = slot.copyWith(isReserved: true);
 
-    // Normally here you would make an API call to update the status of the slot.
-    await Future.delayed(Duration(seconds: 1)); // Simulate a delay
+  //   // Normally here you would make an API call to update the status of the slot.
+  //   await Future.delayed(Duration(seconds: 1)); // Simulate a delay
 
-    // Emit the updated state with the slot being reserved
-    emit(ParkingLoaded(List.from(
-        state is ParkingLoaded ? (state as ParkingLoaded).parkingSlots : [])
-      ..removeWhere((s) => s.id == slot.id)
-      ..add(updatedSlot)));
-  }
+  //   // Emit the updated state with the slot being reserved
+  //   emit(ParkingLoaded(List.from(
+  //       state is ParkingLoaded ? (state as ParkingLoaded).parkingSlots : [])
+  //     ..removeWhere((s) => s.id == slot.id)
+  //     ..add(updatedSlot)));
+
+  // }
+
+  //newwwwwwwwwww
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Future<void> postVehicleDataAndSave(
+  //     int slotId, String plateNumber, int vehicleSizeId) async {
+  //   emit(ParkingLoading());
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse('http://192.168.10.23:5005/vehicle/park'),
+  //       headers: {'Content-Type': 'application/json'},
+  //       body: json.encode({
+  //         'vehicleSizeId': vehicleSizeId,
+  //         'plateNumber': plateNumber,
+  //         'parkingLotId': slotId,
+  //       }),
+  //     );
+
+  //   if (response.statusCode == 201) {
+  //     // Update Firestore with booking details
+  //     final userId = _firebaseAuth.currentUser?.uid;
+  //     if (userId != null) {
+  //       print('@@@@@@@@enter to add in firebase');
+  //       final bookingRef = _firestore
+  //           .collection('user_bookings')
+  //           .doc(userId)
+  //           .collection('bookings')
+  //           .doc();
+
+  //       await bookingRef.set({
+  //         'parkingLotId': slotId,
+  //         'slotId': slotId,
+  //         'plateNumber': plateNumber,
+  //         'timestamp': FieldValue.serverTimestamp(),
+  //       });
+
+  //       emit(ParkingSuccess('Vehicle parked and saved successfully.'));
+  //     } else {
+  //       emit(ParkingError('User not logged in.'));
+  //     }
+
+  //     // Refresh parking slots
+  //     fetchParkingSlots();
+  //   } else {
+  //     emit(ParkingError(
+  //         'Failed to park vehicle. Status code: ${response.statusCode}'));
+  //   }
+  // } catch (e) {
+  //   emit(ParkingError('Error parking vehicle: ${e.toString()}'));
+  // }
+  // }
 
   Future<void> postVehicleData(
       int slotId, String plateNumber, int vehicleSizeId) async {
@@ -127,6 +173,31 @@ class ParkingCubit extends Cubit<ParkingState> {
           slots[index] = slots[index].copyWith(isReserved: true);
         }
         emit(ParkingSuccess('Vehicle parked successfully'));
+
+        //firebase workkkkkkkkkkkkkkkkkkkk
+
+        final userId = _firebaseAuth.currentUser?.uid;
+        if (userId != null) {
+          print('@@@@@@@@enter to add in firebase');
+          final bookingRef = _firestore
+              .collection('user_bookings')
+              .doc(userId)
+              .collection('bookings')
+              .doc();
+
+          await bookingRef.set({
+            'parkingLotId': slotId,
+            'slotId': slotId,
+            'plateNumber': plateNumber,
+            'timestamp': FieldValue.serverTimestamp(),
+          });
+
+          emit(ParkingSuccess('Vehicle parked and saved successfully.'));
+        } else {
+          emit(ParkingError('User not logged in.'));
+        }
+
+        //firebase work enddddddddddddddddddddd
         fetchParkingSlots();
       } else {
         emit(ParkingError('Failed to park vehicle'));

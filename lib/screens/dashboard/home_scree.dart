@@ -1,56 +1,10 @@
-// //navbar code
-// import 'package:flutter/material.dart';
-// import 'package:flutter/widgets.dart';
-
-// import 'navBar/book_slot_tab.dart';
-// import 'navBar/homeTab.dart';
-// import 'navBar/user_profile_tab.dart';
-
-// class homeScreen extends StatefulWidget {
-//   @override
-//   _homeScreenState createState() => _homeScreenState();
-// }
-
-// class _homeScreenState extends State<homeScreen> {
-//   int _selectedIndex = 0;
-
-//   final List<Widget> _screens = [
-//     HomeTab(),
-//     BookedSlotsTab(),
-//     UserProfileTab(),
-//   ];
-
-//   void _onItemTapped(int index) {
-//     setState(() {
-//       _selectedIndex = index;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("Parking App")),
-//       body: _screens[_selectedIndex],
-//       bottomNavigationBar: BottomNavigationBar(
-//         currentIndex: _selectedIndex,
-//         onTap: _onItemTapped,
-//         items: const [
-//           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-//           BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Booked Slots'),
-//           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 //new with designnnnnnnnnn
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:parking_system/cubit/parking_cubit.dart';
 import 'package:parking_system/screens/custom_widges/custom_snackbar.dart';
 import 'package:parking_system/screens/custom_widges/custom_textfield.dart';
-import '../../cubit/parking_cubit.dart';
 import '../../models/parkingSlot_model.dart'; // Assuming you have a ParkingSlot model
 import 'navBar/book_slot_tab.dart';
 import 'navBar/homeTab.dart';
@@ -155,45 +109,98 @@ class _homeScreenState extends State<homeScreen> {
             setState(() {
               isSlotSelected = true;
             });
-            showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Enter Vehicle Number for Slot ${selectedSlot?.id}',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+            // showModalBottomSheet(
+            //   context: context,
+            //   builder: (context) {
+            //     return Padding(
+            //       padding: const EdgeInsets.all(16.0),
+            //       child: Column(
+            //         children: [
+            //           Text(
+            //             'Enter Vehicle Number for Slot ${selectedSlot?.id}',
+            //             style: TextStyle(
+            //                 fontSize: 18, fontWeight: FontWeight.bold),
+            //           ),
+            //           SizedBox(height: 20),
+            //           CustomTextField(
+            //             controller: _plateNumberController,
+            //             labelText: 'Vehicle Plate Number',
+            //             icon: Icons.car_repair,
+            //           ),
+            //           SizedBox(height: 20),
+            //           ElevatedButton(
+            //             onPressed: () {
+            //               if (_plateNumberController.text.isNotEmpty) {
+            //                 bookParkingSlot(selectedSlot!);
+            //               } else {
+            //                 CustomSnackBar.show(
+            //                   context: context,
+            //                   message: 'Plate number is required!',
+            //                   backgroundColor: Colors.red,
+            //                   icon: Icons.error,
+            //                 );
+            //               }
+            //             },
+            //             child: Text('Book Slot'),
+            //           ),
+            //         ],
+            //       ),
+            //     );
+            //   },
+            // );
+
+            ///newwwwwwwwwwwwwwwwwwwwwww
+            void showBookingDialog(BuildContext context,
+                ParkingCubit parkingCubit, ParkingSlot slot) {
+              TextEditingController plateNumberController =
+                  TextEditingController();
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('Book Slot ${slot.id}'),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Enter your vehicle plate number'),
+                        TextField(
+                          controller: plateNumberController,
+                          decoration: InputDecoration(
+                            labelText: 'Plate Number',
+                            icon: Icon(Icons.car_repair),
+                          ),
+                        ),
+                      ],
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('Cancel'),
                       ),
-                      SizedBox(height: 20),
-                      CustomTextField(
-                        controller: _plateNumberController,
-                        labelText: 'Vehicle Plate Number',
-                        icon: Icons.car_repair,
-                      ),
-                      SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
-                          if (_plateNumberController.text.isNotEmpty) {
-                            bookParkingSlot(selectedSlot!);
+                          final plateNumber = plateNumberController.text.trim();
+                          if (plateNumber.isNotEmpty) {
+                            parkingCubit.postVehicleData(
+                                slot.id, plateNumber, 1);
+                            Navigator.pop(context);
                           } else {
-                            CustomSnackBar.show(
-                              context: context,
-                              message: 'Plate number is required!',
-                              backgroundColor: Colors.red,
-                              icon: Icons.error,
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      'Please enter a valid plate number.')),
                             );
                           }
                         },
                         child: Text('Book Slot'),
                       ),
                     ],
-                  ),
-                );
-              },
-            );
+                  );
+                },
+              );
+            }
+
+            ///
           }
         },
         child: Icon(Icons.add),
