@@ -162,11 +162,12 @@ class AuthCubit extends Cubit<AuthState> {
 
       if (role == 'admin') {
         emit(AdminAuthenticated());
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => AdminHome()));
-        Navigator.pushNamed(context, '/admin_home');
+        // Navigator.push(
+        // context, MaterialPageRoute(builder: (context) => AdminHome()));
+        Navigator.pushReplacementNamed(context, '/admin_home');
         //
         print('@@@@@@@@@@@@@@@@@trueeeeeee');
+        return;
       } else {
         emit(UserAuthenticated()); // User role detected
       }
@@ -211,8 +212,14 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  Future<void> logout() async {
+    await _firebaseAuth.signOut();
+  }
+
   Future<void> signInWithGoogle() async {
-    emit(AuthLoading());
+    // emit(AuthLoading());
     try {
       await authRepository.signInWithGoogle();
       emit(AuthSuccess());

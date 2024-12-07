@@ -56,6 +56,8 @@ class _SignInScreenState extends State<SignInScreen> {
               );
 
               Navigator.pushReplacementNamed(context, '/home');
+              _emailController.clear();
+              _passwordController.clear();
             } else if (state is AdminAuthenticated) {
               print('enter hogya inside AdminAuth');
               // Navigator.push(context,

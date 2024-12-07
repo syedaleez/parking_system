@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../cubit/auth_cubit.dart';
 import '../../../cubit/user_cubit.dart';
 import '../../../states/user_state.dart';
 // import '../cubit/user_cubit.dart';
@@ -13,6 +14,12 @@ class UserProfileTab extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('User Profile'),
+        leading: IconButton(
+            onPressed: () {
+              context.read<AuthCubit>().logout();
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+            icon: Icon(Icons.logout_outlined)),
       ),
       body: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {

@@ -36,6 +36,7 @@ class ParkingError extends ParkingState {
 
 class ParkingCubit extends Cubit<ParkingState> {
   ParkingCubit() : super(ParkingLoading());
+  List<ParkingSlot> slots = [];
 
   // function to get APi in the UI
   Future<void> fetchParkingSlots() async {
@@ -49,7 +50,7 @@ class ParkingCubit extends Cubit<ParkingState> {
         final data = json.decode(response.body);
 
         if (data['data'] is List) {
-          List<ParkingSlot> slots = (data['data'] as List)
+          slots = (data['data'] as List)
               .map((json) => ParkingSlot.fromJson(json))
               .toList();
           emit(ParkingLoaded(slots)); // Emit the loaded slots state
@@ -120,6 +121,11 @@ class ParkingCubit extends Cubit<ParkingState> {
 
       if (response.statusCode == 201) {
         print('@@@@@@@vehicle parked successfullyyyy');
+        // Update the slot status locally
+        final index = slots.indexWhere((slot) => slot.id == slotId);
+        if (index != -1) {
+          slots[index] = slots[index].copyWith(isReserved: true);
+        }
         emit(ParkingSuccess('Vehicle parked successfully'));
         fetchParkingSlots();
       } else {
