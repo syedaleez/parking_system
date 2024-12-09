@@ -112,7 +112,7 @@ class MyApp extends StatelessWidget {
         // ),
         BlocProvider<ParkingCubit>(
           create: (context) =>
-              ParkingCubit()..fetchParkingSlots(), // Fetch once
+              ParkingCubit()..fetchAndMonitorSlots(), // Fetch once
         ),
       ],
       child: MaterialApp(

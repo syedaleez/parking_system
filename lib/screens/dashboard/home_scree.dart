@@ -109,45 +109,6 @@ class _homeScreenState extends State<homeScreen> {
             setState(() {
               isSlotSelected = true;
             });
-            // showModalBottomSheet(
-            //   context: context,
-            //   builder: (context) {
-            //     return Padding(
-            //       padding: const EdgeInsets.all(16.0),
-            //       child: Column(
-            //         children: [
-            //           Text(
-            //             'Enter Vehicle Number for Slot ${selectedSlot?.id}',
-            //             style: TextStyle(
-            //                 fontSize: 18, fontWeight: FontWeight.bold),
-            //           ),
-            //           SizedBox(height: 20),
-            //           CustomTextField(
-            //             controller: _plateNumberController,
-            //             labelText: 'Vehicle Plate Number',
-            //             icon: Icons.car_repair,
-            //           ),
-            //           SizedBox(height: 20),
-            //           ElevatedButton(
-            //             onPressed: () {
-            //               if (_plateNumberController.text.isNotEmpty) {
-            //                 bookParkingSlot(selectedSlot!);
-            //               } else {
-            //                 CustomSnackBar.show(
-            //                   context: context,
-            //                   message: 'Plate number is required!',
-            //                   backgroundColor: Colors.red,
-            //                   icon: Icons.error,
-            //                 );
-            //               }
-            //             },
-            //             child: Text('Book Slot'),
-            //           ),
-            //         ],
-            //       ),
-            //     );
-            //   },
-            // );
 
             ///newwwwwwwwwwwwwwwwwwwwwww
             void showBookingDialog(BuildContext context,
@@ -181,15 +142,19 @@ class _homeScreenState extends State<homeScreen> {
                         onPressed: () {
                           final plateNumber = plateNumberController.text.trim();
                           if (plateNumber.isNotEmpty) {
-                            parkingCubit.postVehicleData(
-                                slot.id, plateNumber, 1);
+                            parkingCubit.bookSlot(slot.id, plateNumber, 1);
                             Navigator.pop(context);
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      'Please enter a valid plate number.')),
-                            );
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   SnackBar(
+                            //       content: Text(
+                            //           'Please enter a valid plate number.')),
+                            // );
+                            //tried to replace the snackbar with the custom snackbar that i made yaesterday maybe or day before yesterday.
+                            CustomSnackBar.show(
+                                context: context,
+                                backgroundColor: Colors.red,
+                                message: "Please enter a valid number plate");
                           }
                         },
                         child: Text('Book Slot'),

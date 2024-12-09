@@ -46,7 +46,7 @@ class ParkingForm extends StatelessWidget {
                 // Trigger the API call via the cubit
                 context
                     .read<ParkingCubit>()
-                    .postVehicleData(slotId, plateNumber, vehicleSizeId);
+                    .bookSlot(slotId, plateNumber, vehicleSizeId);
                 Navigator.pop(context); // Close the form
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(

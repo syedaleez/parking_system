@@ -56,7 +56,7 @@ class _SignInScreenState extends State<SignInScreen> {
 //end hereeeeeeeeeeee
 
             if (state is AuthSuccess) {
-              context.read<ParkingCubit>().fetchParkingSlots();
+              context.read<ParkingCubit>().fetchAndMonitorSlots();
 
               CustomSnackBar.show(
                 context: context,
