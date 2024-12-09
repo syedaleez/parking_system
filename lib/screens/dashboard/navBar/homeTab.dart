@@ -252,4 +252,43 @@ class ParkingSlotList extends StatelessWidget {
       },
     );
   }
+
+//new show dialog previos one is just on the top
+
+//   void _showCancelOrExitDialog(BuildContext context, ParkingSlot slot) {
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           title: Text('Manage Booking'),
+//           content:
+//               Text('Would you like to exit the vehicle or cancel the booking?'),
+//           actions: [
+//             TextButton(
+//               onPressed: () {
+//                 // Exit the vehicle
+//                 context.read<ParkingCubit>().exitVehicle(slot.id);
+//                 Navigator.pop(context); // Close the dialog
+//               },
+//               child: const Text('Exit Vehicle'),
+//             ),
+//             TextButton(
+//               onPressed: () {
+//                 // Cancel the booking
+//                 context.read<ParkingCubit>().exitVehicle(slot.id);
+//                 Navigator.pop(context); // Close the dialog
+//               },
+//               child: const Text('Cancel Booking'),
+//             ),
+//             TextButton(
+//               onPressed: () {
+//                 Navigator.pop(context); // Just close the dialog
+//               },
+//               child: const Text('Cancel'),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
 }

@@ -298,7 +298,7 @@ class ParkingCubit extends Cubit<ParkingState> {
 
   //endddddddddd
 
-  /// Book a Slot
+  // / Book a Slot
   Future<void> bookSlot(
       int slotId, String plateNumber, int vehicleSizeId) async {
     try {
@@ -317,6 +317,9 @@ class ParkingCubit extends Cubit<ParkingState> {
 
       if (response.statusCode == 201) {
         print('Vehicle parked successfully.');
+        final responseData = json.decode(response.body);
+
+        final ticketId = responseData['ticketId'];
 
         // Update global booked slots in Firestore
         final bookingRef = _firestore.collection('booked_slots').doc('$slotId');
@@ -338,6 +341,7 @@ class ParkingCubit extends Cubit<ParkingState> {
           await userBookingRef.set({
             'slotId': slotId,
             'plateNumber': plateNumber,
+            'ticketId': ticketId,
             'timestamp': FieldValue.serverTimestamp(),
           });
         }
@@ -351,6 +355,74 @@ class ParkingCubit extends Cubit<ParkingState> {
       emit(ParkingError('Error parking vehicle: $e'));
     }
   }
+
+//updated function to post vehicle vechiele
+//   Future<void> bookSlot(
+//       int slotId, String plateNumber, int vehicleSizeId) async {
+//     try {
+//       emit(ParkingLoading());
+
+//       // API Call to park vehicle
+//       final response = await http.post(
+//         Uri.parse('http://192.168.10.23:5005/vehicle/park'),
+//         headers: {'Content-Type': 'application/json'},
+//         body: json.encode({
+//           'vehicleSizeId': vehicleSizeId,
+//           'plateNumber': plateNumber,
+//           'parkingLotId': slotId,
+//         }),
+//       );
+
+//       if (response.statusCode == 201) {
+//         print('Vehicle parked successfully.');
+//         final responseData = json.decode(response.body);
+//         final ticketId =
+//             responseData['ticketId']; // Extract ticketId from response
+
+//         // Update global booked slots in Firestore
+//         final bookingRef = _firestore.collection('booked_slots').doc('$slotId');
+//         await bookingRef.set({
+//           'slotId': slotId,
+//           'plateNumber': plateNumber,
+//           'userId': _firebaseAuth.currentUser?.uid,
+//           'ticketId': ticketId, // Save ticketId for future reference
+//           'timestamp': FieldValue.serverTimestamp(),
+//         });
+
+//         // Update user-specific booking record
+//         final userId = _firebaseAuth.currentUser?.uid;
+//         if (userId != null) {
+//           final userBookingRef = _firestore
+//               .collection('user_bookings')
+//               .doc(userId)
+//               .collection('bookings')
+//               .doc('$slotId');
+//           await userBookingRef.set({
+//             'slotId': slotId,
+//             'plateNumber': plateNumber,
+//             'ticketId': ticketId,
+//             'timestamp': FieldValue.serverTimestamp(),
+//           });
+//         }
+
+//         // Update local slot status
+//         final index = slots.indexWhere((slot) => slot.id == slotId);
+//         if (index != -1) {
+//           slots[index] = slots[index].copyWith(isReserved: true);
+//         }
+
+//         emit(ParkingSuccess('Slot booked successfully.'));
+//         fetchAndMonitorSlots(); // Refresh slots
+//       } else {
+//         emit(ParkingError(
+//             'Failed to park vehicle. Status code: ${response.statusCode}'));
+//       }
+//     } catch (e) {
+//       emit(ParkingError('Error parking vehicle: $e'));
+//     }
+//   }
+
+// //function to post data in exit API also in .....
 }
 
 extension on ParkingSlot {

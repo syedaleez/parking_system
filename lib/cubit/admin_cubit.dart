@@ -26,6 +26,7 @@ class AdminCubit extends Cubit<AdminState> {
     if (name.isEmpty || rank <= 0 || nSlotsKey.isEmpty) {
       emit(ParkingLotCreationFailure(
           'All fields are required, and rank must be positive.'));
+      print("All fields are reuired");
       return;
     }
 
@@ -35,8 +36,13 @@ class AdminCubit extends Cubit<AdminState> {
     try {
       await adminRepository.createParkingLot(parkingLot);
       emit(ParkingLotCreated());
+      print("parking lot createdddddddddddddddddddddd");
     } catch (e) {
-      emit(ParkingLotCreationFailure(e.toString()));
+      emit(ParkingLotCreationFailure(
+
+          //  print("faileddddddddddddddd");
+          e.toString()));
+      print("failedddddddddddddd");
     }
   }
 }

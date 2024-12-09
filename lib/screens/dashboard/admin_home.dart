@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:parking_system/screens/custom_widges/custom_elevatedButton.dart';
 import 'package:parking_system/screens/custom_widges/custom_snackbar.dart';
 import 'package:parking_system/screens/custom_widges/custom_textfield.dart';
 import '../../cubit/admin_cubit.dart';
@@ -189,13 +190,6 @@ class _AdminHomeState extends State<AdminHome> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 8),
-              // _buildDropdown(
-              //   hint: 'Select Rank',
-              //   items: List.generate(10, (index) => (index + 1).toString()),
-              //   onSelected: (value) {
-              //     _rankController.text = value ?? '';
-              //   },
-              // ),
 
               _buildTextField(
                 controller: _rankController,
@@ -271,51 +265,61 @@ class _AdminHomeState extends State<AdminHome> {
                 ),
               SizedBox(height: 20),
 
-              // Create Parking Lot Button
               Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // final name = _nameController.text;
-                    // final rank = int.tryParse(_rankController.text) ?? 0;
+                  // child: ElevatedButton(
+                  //   onPressed: () {
+                  //     final name = _nameController.text;
+                  //     final rank = int.tryParse(_rankController.text) ?? 0;
 
-                    // if (name.isNotEmpty && rank > 0 && slotsMap.isNotEmpty) {
-                    //   // Replace with cubit function call to create parking lot
-                    //   print(
-                    //       'Parking Lot Created: $name, Rank: $rank, Slots: $slotsMap');
-                    // } else {
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     SnackBar(
-                    //       content: Text('Please fill all required fields'),
-                    //       backgroundColor: Colors.red,
-                    //     ),
-                    //   );
-                    // }
+                  //     context
+                  //         .read<AdminCubit>()
+                  //         .createParkingLot(name, rank, _slotMap);
 
-                    final name = _nameController.text;
-                    final rank = int.tryParse(_rankController.text) ?? 0;
+                  //     // CustomSnackBar.show(
+                  //     //     context: context,
+                  //     //     message: 'Parking lot created admin sahab');
 
-                    context
-                        .read<AdminCubit>()
-                        .createParkingLot(name, rank, _slotMap);
+                  //     setState(() {
+                  //       _rankController.clear();
+                  //       _nameController.clear();
+                  //       _slotKeyController.clear();
+                  //       _slotMap.clear();
+                  //     });
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     iconColor: Colors.blueAccent,
+                  //     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  //     textStyle:
+                  //         TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  //   ),
+                  //   child: const Text('Create Parking Lot'),
+                  // ),
+                  child: CustomElevatedButton(
+                onPressed: () {
+                  final name = _nameController.text;
+                  final rank = int.tryParse(_rankController.text) ?? 0;
 
-                    CustomSnackBar.show(
-                        context: context,
-                        message: 'Parking lot created admin sahab');
+                  context
+                      .read<AdminCubit>()
+                      .createParkingLot(name, rank, _slotMap);
 
-                    _rankController.clear();
-                    _nameController.clear();
-                    _slotKeyController.clear();
-                    _slotMap.clear();
-                  },
-                  child: Text('Create Parking Lot'),
-                  style: ElevatedButton.styleFrom(
-                    iconColor: Colors.blueAccent,
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                    textStyle:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
+                  CustomSnackBar.show(
+                      context: context,
+                      message: 'Parking lot created admin sahab');
+
+                  // setState(() {
+                  //   _rankController.clear();
+                  //   _nameController.clear();
+                  //   _slotKeyController.clear();
+                  //   _slotMap.clear();
+                  // });
+                },
+                text: "Create Parking Lot",
+              )),
+              SizedBox(
+                height: 10,
               ),
+              CustomElevatedButton(onPressed: () {}, text: "View User Details"),
             ],
           ),
         ),
@@ -323,7 +327,7 @@ class _AdminHomeState extends State<AdminHome> {
     );
   }
 
-  // Helper Method to Build TextField
+  // Helper method to biolt TextField
   Widget _buildTextField(
       {required TextEditingController controller,
       required String label,
@@ -345,7 +349,7 @@ class _AdminHomeState extends State<AdminHome> {
     required ValueChanged<String?> onSelected,
   }) {
     return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         border: OutlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
       ),
