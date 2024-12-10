@@ -189,6 +189,12 @@ class BookedSlotsLoaded extends ParkingState {
   BookedSlotsLoaded(this.bookedSlots);
 }
 
+class AdminBookedSlotsLoaded extends ParkingState {
+  final List<Map<String, dynamic>> bookedSlots;
+
+  AdminBookedSlotsLoaded(this.bookedSlots);
+}
+
 class ParkingError extends ParkingState {
   final String errorMessage;
   ParkingError(this.errorMessage);
@@ -349,6 +355,47 @@ class ParkingCubit extends Cubit<ParkingState> {
       emit(ParkingError('Error fetching booked slots: ${e.toString()}'));
     }
   }
+
+  //fetch all booked slotss for admin
+  Future<void> fetchAllBookedSlots() async {
+    try {
+      emit(ParkingLoading());
+      // Fetch booked slots
+      final bookedSlotsSnapshot =
+          await FirebaseFirestore.instance.collection('booked_slots').get();
+
+      final List<Map<String, dynamic>> bookedSlots = [];
+
+      // Loop through each booked slot and fetch user details
+      for (var doc in bookedSlotsSnapshot.docs) {
+        final data = doc.data();
+        final userId = data['userId'] as String;
+
+        // Fetch user details
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .get();
+
+        final userName = userDoc.data()?['fullName'] ?? 'Unknown User';
+        final userEmail = userDoc.data()?['email'] ?? 'Unknown Email';
+
+        bookedSlots.add({
+          'slotId': data['slotId'],
+          'plateNumber': data['plateNumber'],
+          'timestamp': (data['timestamp'] as Timestamp?)?.toDate(),
+          'userName': userName,
+          'userEmail': userEmail,
+        });
+      }
+
+      emit(AdminBookedSlotsLoaded(bookedSlots));
+    } catch (e) {
+      emit(ParkingError('Failed to fetch booked slots: $e'));
+    }
+  }
+
+  //all booked slots work end
 
   //endddddddddd
 
