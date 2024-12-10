@@ -36,10 +36,12 @@ class _AdminHomeState extends State<AdminHome> {
   void _setupNotificationListener() {
     FirebaseFirestore.instance.collection('booked_slots').snapshots().listen(
       (snapshot) {
-        setState(() {
-          notificationCount =
-              snapshot.docs.length; // **Update notification count**
-        });
+        if (snapshot.docChanges
+            .any((change) => change.type == DocumentChangeType.added)) {
+          setState(() {
+            notificationCount += 1; // Increment count by 1
+          });
+        }
       },
     );
   }
@@ -85,6 +87,9 @@ class _AdminHomeState extends State<AdminHome> {
               IconButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/notifications');
+                  setState(() {
+                    notificationCount = 0;
+                  });
                 },
                 icon: const Icon(Icons.notifications),
                 color: Colors.white,
