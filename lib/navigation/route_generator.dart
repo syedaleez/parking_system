@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:parking_system/navigation/route_name.dart';
 import 'package:parking_system/screens/admin_pannel/User_Details/view_user_details.dart';
 import 'package:parking_system/screens/admin_pannel/admin_home.dart';
+import 'package:parking_system/screens/admin_pannel/notification_screen.dart';
 import 'package:parking_system/screens/dashboard/home_scree.dart';
 
 import '../screens/signIn_signUp/SignInScreen.dart';
@@ -25,6 +26,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => AdminHome());
       case '/view_user':
         return MaterialPageRoute(builder: (_) => ViewUserDetails());
+      case '/notifications':
+        return MaterialPageRoute(builder: (_) => NotificationsScreen());
       // Example routes for other screens
       // case '/admin':
       //   return MaterialPageRoute(builder: (_) => AdminPanelScreen());

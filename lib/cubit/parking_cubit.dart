@@ -163,6 +163,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -177,6 +178,11 @@ class ParkingLoading extends ParkingState {}
 class ParkingSuccess extends ParkingState {
   final String message;
   ParkingSuccess(this.message);
+}
+
+class NotificationUpdated extends ParkingState {
+  final int notificationCount;
+  NotificationUpdated(this.notificationCount);
 }
 
 class ParkingLoaded extends ParkingState {
@@ -199,6 +205,15 @@ class ParkingError extends ParkingState {
   final String errorMessage;
   ParkingError(this.errorMessage);
 }
+// class ParkingCubit extends Cubit<ParkingState> {
+//   int notificationCount = 0;
+
+//   ParkingCubit() : super(ParkingInitial());
+
+//   void initialize() {
+//     listenForNewBookings();
+//   }
+// }
 
 class ParkingCubit extends Cubit<ParkingState> {
   ParkingCubit() : super(ParkingLoading());
@@ -207,6 +222,7 @@ class ParkingCubit extends Cubit<ParkingState> {
 
   List<ParkingSlot> slots = [];
   Set<int> bookedSlotIds = {}; // Keep track of booked slots globally
+  int notificationCount = 0;
 
   /// Fetch and Monitor Parking Slots
   // Future<void> fetchAndMonitorSlots() async {
@@ -354,6 +370,19 @@ class ParkingCubit extends Cubit<ParkingState> {
     } catch (e) {
       emit(ParkingError('Error fetching booked slots: ${e.toString()}'));
     }
+  }
+
+  void listenForNewBookings() {
+    FirebaseFirestore.instance
+        .collection('booked_slots')
+        .snapshots()
+        .listen((snapshot) {
+      final newNotifications = snapshot.docs.length;
+      if (newNotifications > notificationCount) {
+        notificationCount = newNotifications; // Update the count
+        emit(NotificationUpdated(notificationCount));
+      }
+    });
   }
 
   //fetch all booked slotss for admin
