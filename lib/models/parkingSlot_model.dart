@@ -9,7 +9,8 @@ class ParkingSlot {
   final List<int> data;
   final String createdAt;
   final String updatedAt;
-  final bool isReserved; // New field to track reservation status
+  final bool isReserved;
+  final String plateNumber;
 
   ParkingSlot({
     required this.id,
@@ -19,7 +20,8 @@ class ParkingSlot {
     required this.data,
     required this.createdAt,
     required this.updatedAt,
-    required this.isReserved, // Add the new field here
+    required this.isReserved,
+    required this.plateNumber, // Add the new field here
   });
 
 //newwwwww
@@ -43,8 +45,8 @@ class ParkingSlot {
       data: parsedData, // The correctly parsed list of integers
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
-      isReserved: json['is_reserved'] ??
-          false, // Assuming 'is_reserved' is part of the JSON
+      isReserved: json['is_reserved'] ?? false,
+      plateNumber: json['plateNumber'] as String? ?? 'Unknown', //JSON
     );
   }
 
@@ -58,8 +60,9 @@ class ParkingSlot {
       data: this.data,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
-      isReserved: isReserved ??
-          this.isReserved, // If no value is passed, retain the current value
+      isReserved: isReserved ?? this.isReserved,
+      plateNumber: plateNumber ??
+          this.plateNumber, // If no value is passed, retain the current value
     );
   }
 }

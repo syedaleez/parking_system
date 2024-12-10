@@ -42,7 +42,7 @@ class _SignInScreenState extends State<SignInScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: EdgeInsets.symmetric(horizontal: 15.0),
         child: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
 //new for additional details

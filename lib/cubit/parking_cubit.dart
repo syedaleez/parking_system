@@ -248,7 +248,7 @@ class ParkingCubit extends Cubit<ParkingState> {
       // Fetch slots from API
       final response = await http
           .get(Uri.parse('http://192.168.10.23:5005/parking_lot/status'))
-          .timeout(const Duration(seconds: 15));
+          .timeout(const Duration(seconds: 35));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -325,13 +325,15 @@ class ParkingCubit extends Cubit<ParkingState> {
           id: data['slotId'] as int? ?? 0, // Default to 0 if null
           parkingLotId:
               data['parkingLotId'] as int? ?? 0, // Default to 0 if null
-          parkingLotRank: data['parkingLotRank'] ??
-              0, // Adjust based on Firestore structure
-          slotSizeId:
-              data['slotSizeId'] ?? 0, // Adjust based on Firestore structure
+          parkingLotRank: data['parkingLotRank'] ?? 0,
+          slotSizeId: data['slotSizeId'] ?? 0,
           data: (data['vehicleData'] as List<dynamic>? ?? [])
               .map((item) => int.tryParse(item.toString()) ?? 0)
-              .toList(), // Convert List<dynamic> to List<int>
+              .toList(),
+          //plate number fetchhh
+          plateNumber: data['plateNumber'] as String? ?? 'Unknown',
+          // .map((item) => int.tryParse(item.toString()) ?? 0)
+          // .toList(),
           createdAt:
               (data['createdAt'] as Timestamp?)?.toDate().toIso8601String() ??
                   DateTime.now().toIso8601String(), // Convert to String
@@ -541,6 +543,7 @@ extension on ParkingSlot {
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       isReserved: isReserved ?? this.isReserved,
+      plateNumber: this.plateNumber,
     );
   }
 }

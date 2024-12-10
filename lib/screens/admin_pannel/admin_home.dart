@@ -154,8 +154,15 @@ class _AdminHomeState extends State<AdminHome> {
     //newwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () {}, icon: Icon(Icons.logout_sharp)),
-        title: Text('Admin Dashboard'),
+        leading: IconButton(
+          onPressed: () {},
+          icon: Icon(Icons.logout_sharp),
+          color: Colors.white,
+        ),
+        title: const Text(
+          'Admin Dashboard',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
       ),
@@ -319,7 +326,11 @@ class _AdminHomeState extends State<AdminHome> {
               SizedBox(
                 height: 10,
               ),
-              CustomElevatedButton(onPressed: () {}, text: "View User Details"),
+              CustomElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/view_user');
+                  },
+                  text: "View User Details"),
             ],
           ),
         ),

@@ -89,7 +89,7 @@ class BookedSlotsTab extends StatelessWidget {
                 title: Text('Slot ID: ${slot.id}'),
                 subtitle: Text(
                   'Reserved on: ${_formatDate(slot.createdAt)}\n'
-                  'Vehicle Plate: ${slot.data.join(", ")}',
+                  'Vehicle Plate: ${slot.plateNumber ?? "No Plate"}\n',
                 ),
                 trailing: IconButton(
                   icon: Icon(Icons.cancel, color: Colors.red),
