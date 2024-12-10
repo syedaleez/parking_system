@@ -62,6 +62,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart'; // For formatting dates
+import 'package:shimmer/shimmer.dart';
 import '../../../cubit/parking_cubit.dart';
 
 class BookedSlotsTab extends StatelessWidget {
@@ -74,7 +75,25 @@ class BookedSlotsTab extends StatelessWidget {
     return BlocBuilder<ParkingCubit, ParkingState>(
       builder: (context, state) {
         if (state is ParkingLoading) {
-          return Center(child: CircularProgressIndicator());
+          // return Center(child: CircularProgressIndicator());
+          return ListView.builder(
+            itemCount: 6, // Placeholder count for shimmer effect
+            itemBuilder: (context, index) => Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 8), // Spacing around the shimmer
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  height: 100, // Height of the shimmer box
+                ),
+              ),
+            ),
+          );
         } else if (state is BookedSlotsLoaded) {
           if (state.bookedSlots.isEmpty) {
             return Center(child: Text('No booked slots available.'));
