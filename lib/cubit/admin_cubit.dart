@@ -1,12 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/parking_lot_model.dart';
 import '../repository/admin_repo.dart';
 import '../states/admin_state.dart';
-import 'auth_cubit.dart';
-import 'user_cubit.dart';
 
 class AdminAuthenticated extends AdminState {}
 
@@ -32,7 +27,7 @@ class AdminCubit extends Cubit<AdminState> {
 
     final parkingLot = ParkingLot(name: name, rank: rank, nSlotsKey: nSlotsKey);
 
-    emit(ParkingLotLoading());
+    emit(ParkingLotCreated());
     try {
       await adminRepository.createParkingLot(parkingLot);
       emit(ParkingLotCreated());

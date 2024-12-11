@@ -54,63 +54,147 @@ class UserProfileTab extends StatelessWidget {
 
     //b box codeeeeeeeeeeeeee
 
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: Text('User  Profile',
+    //         style: TextStyle(fontWeight: FontWeight.bold)),
+    //     leading: IconButton(
+    //       onPressed: () {
+    //         context.read<AuthCubit>().logout();
+    //         Navigator.pushReplacementNamed(context, '/login');
+    //       },
+    //       icon: Icon(Icons.logout_outlined),
+    //     ),
+    //     backgroundColor: Colors.blueAccent,
+    //   ),
+    //   body: BlocBuilder<UserCubit, UserState>(
+    //     builder: (context, state) {
+    //       if (state is UserLoading) {
+    //         return Center(child: CircularProgressIndicator());
+    //       } else if (state is UserDataLoaded) {
+    //         final userData = state.userData;
+    //         return Padding(
+    //           padding: const EdgeInsets.all(16.0),
+    //           child: Card(
+    //             elevation: 4,
+    //             shape: RoundedRectangleBorder(
+    //               borderRadius: BorderRadius.circular(17),
+    //             ),
+    //             child: Padding(
+    //               padding: const EdgeInsets.all(40.0),
+    //               child: Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.center,
+
+    //                 children: [
+    //                   Text('Name: ${userData['fullName'] ?? 'N/A'}',
+    //                       style: TextStyle(fontSize: 18)),
+    //                   Text('Email: ${userData['email'] ?? 'N/A'}',
+    //                       style: TextStyle(fontSize: 18)),
+    //                   Text('Phone Number: ${userData['phoneNumber'] ?? 'N/A'}',
+    //                       style: TextStyle(fontSize: 18)),
+    //                   Text('State: ${userData['state'] ?? 'N/A'}',
+    //                       style: TextStyle(fontSize: 18)),
+
+    //                 ],
+    //               ),
+    //             ),
+    //           ),
+    //         );
+    //       } else if (state is UserError) {
+    //         return Center(
+    //           child: Text(state.error,
+    //               style: TextStyle(color: Colors.red, fontSize: 18)),
+    //         );
+    //       } else {
+    //         return Center(
+    //             child: Text('No user data available',
+    //                 style: TextStyle(fontSize: 18)));
+    //       }
+    //     },
+    //   ),
+    // );
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('User  Profile',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        leading: IconButton(
-          onPressed: () {
-            context.read<AuthCubit>().logout();
-            Navigator.pushReplacementNamed(context, '/login');
-          },
-          icon: Icon(Icons.logout_outlined),
-        ),
-        backgroundColor: Colors.blueAccent,
-      ),
       body: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {
           if (state is UserLoading) {
             return Center(child: CircularProgressIndicator());
           } else if (state is UserDataLoaded) {
             final userData = state.userData;
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(17),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(40.0),
+            return Stack(
+              children: [
+                Center(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    // children: [
-                    //   Text('User  Information', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    //   SizedBox(height: 20),
-                    //   _buildUser InfoRow('Name:', userData['fullName'] ?? 'N/A'),
-                    //   _buildUser InfoRow('Email:', userData['email'] ?? 'N/A'),
-                    //   _buildUser InfoRow('Phone Number:', userData['phoneNumber'] ?? 'N/A'),
-                    //   _buildUser InfoRow('State:', userData['state'] ?? 'N/A'),
-                    //   // Uncomment if you want to display createdAt
-                    //   // _buildUser InfoRow('Created At:', userData['createdAt']?.toDate().toString() ?? 'N/A'),
-                    // ],
-
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Name: ${userData['fullName'] ?? 'N/A'}',
-                          style: TextStyle(fontSize: 18)),
-                      Text('Email: ${userData['email'] ?? 'N/A'}',
-                          style: TextStyle(fontSize: 18)),
-                      Text('Phone Number: ${userData['phoneNumber'] ?? 'N/A'}',
-                          style: TextStyle(fontSize: 18)),
-                      Text('State: ${userData['state'] ?? 'N/A'}',
-                          style: TextStyle(fontSize: 18)),
-                      // Text(
-                      //     'Created At: ${userData['createdAt'].toDate().toString() ?? 'N/A'}',
-                      //     style: TextStyle(fontSize: 18)),
+                      // Profile Circle
+
+                      Container(
+                        width: screenWidth * 0.3, // 30% of screen width
+                        height: screenWidth * 0.3, // Circular shape
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.blueAccent,
+                        ),
+                        child: Center(
+                          child: Text(
+                            userData['fullName'] != null &&
+                                    userData['fullName'].isNotEmpty
+                                ? userData['fullName'][0]
+                                    .toUpperCase() // First letter in uppercase
+                                : '?', // Fallback if the name is unavailable
+                            style: TextStyle(
+                              fontSize: screenWidth *
+                                  0.15, // Dynamically adjust font size
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: screenHeight * 0.03), // Spacing
+                      // User Details
+                      Text(
+                        'Name: ${userData['fullName'] ?? 'N/A'}',
+                        style: const TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 12),
+                      Text(
+                        'Email: ${userData['email'] ?? 'N/A'}',
+                        style: const TextStyle(fontSize: 21),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Phone Number: ${userData['phoneNumber'] ?? 'N/A'}',
+                        style: TextStyle(fontSize: 21),
+                      ),
+                      SizedBox(height: 12),
+                      Text(
+                        'State: ${userData['state'] ?? 'N/A'}',
+                        style: TextStyle(fontSize: 21),
+                      ),
                     ],
                   ),
                 ),
-              ),
+
+                // Logout Button
+                Positioned(
+                  top: MediaQuery.of(context).size.height *
+                      0.01, // Adjusts top position based on screen height
+                  right: MediaQuery.of(context).size.width * 0.05,
+                  child: IconButton(
+                    icon: Icon(Icons.logout_outlined, color: Colors.blueAccent),
+                    onPressed: () {
+                      context.read<AuthCubit>().logout();
+                      Navigator.pushReplacementNamed(context, '/login');
+                    },
+                  ),
+                ),
+              ],
             );
           } else if (state is UserError) {
             return Center(
@@ -119,8 +203,11 @@ class UserProfileTab extends StatelessWidget {
             );
           } else {
             return Center(
-                child: Text('No user data available',
-                    style: TextStyle(fontSize: 18)));
+              child: Text(
+                'No user data available',
+                style: TextStyle(fontSize: 18),
+              ),
+            );
           }
         },
       ),
@@ -129,32 +216,32 @@ class UserProfileTab extends StatelessWidget {
 }
 
 //imdaad krny wala  function
-Widget _buildProfileItem(String label, String value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0),
-    child: Row(
-      children: [
-        //
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87, // Darker color for better readability
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            textAlign: TextAlign.end,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w400, // Regular weight for value
-              color: Colors.blueGrey, // Slightly muted color for values
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
+// Widget _buildProfileItem(String label, String value) {
+//   return Padding(
+//     padding: const EdgeInsets.symmetric(vertical: 8.0),
+//     child: Row(
+//       children: [
+//         //
+//         Text(
+//           label,
+//           style: const TextStyle(
+//             fontSize: 18,
+//             fontWeight: FontWeight.w600,
+//             color: Colors.black87, // Darker color for better readability
+//           ),
+//         ),
+//         Expanded(
+//           child: Text(
+//             value,
+//             textAlign: TextAlign.end,
+//             style: TextStyle(
+//               fontSize: 18,
+//               fontWeight: FontWeight.w400, // Regular weight for value
+//               color: Colors.blueGrey, // Slightly muted color for values
+//             ),
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }

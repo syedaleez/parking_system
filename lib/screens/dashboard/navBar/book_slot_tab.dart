@@ -103,16 +103,72 @@ class BookedSlotsTab extends StatelessWidget {
             itemCount: state.bookedSlots.length,
             itemBuilder: (context, index) {
               final slot = state.bookedSlots[index];
-              return ListTile(
-                leading: Icon(Icons.local_parking, color: Colors.green),
-                title: Text('Slot ID: ${slot.id}'),
-                subtitle: Text(
-                  'Reserved on: ${_formatDate(slot.createdAt)}\n'
-                  'Vehicle Plate: ${slot.plateNumber ?? "No Plate"}\n',
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.cancel, color: Colors.red),
-                  onPressed: () => _showExitDialog(context, slot.id),
+              // return ListTile(
+              //   leading: Icon(Icons.local_parking, color: Colors.green),
+              //   title: Text('Slot ID: ${slot.id}'),
+              //   subtitle: Text(
+              //     'Reserved on: ${_formatDate(slot.createdAt)}\n'
+              //     'Vehicle Plate: ${slot.plateNumber ?? "No Plate"}\n',
+              //   ),
+              //   trailing: IconButton(
+              //     icon: Icon(Icons.cancel, color: Colors.red),
+              //     onPressed: () => _showExitDialog(context, slot.id),
+              //   ),
+              // );
+
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blueAccent, width: 1.5),
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white, // Background color for the tile
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.shade300,
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    leading: Icon(Icons.local_parking,
+                        color: Colors.green, size: 30),
+                    title: Text(
+                      'Slot ID: ${slot.id}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                            height: 4), // Adds space between title and subtitle
+                        Text(
+                          'Reserved on: ${_formatDate(slot.createdAt)}',
+                          style: TextStyle(fontSize: 14, color: Colors.black87),
+                        ),
+                        Text(
+                          'Vehicle Plate: ${slot.plateNumber ?? "No Plate"}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.cancel, color: Colors.red, size: 28),
+                      onPressed: () => _showExitDialog(context, slot.id),
+                    ),
+                  ),
                 ),
               );
             },

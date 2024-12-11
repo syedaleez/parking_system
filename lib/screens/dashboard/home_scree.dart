@@ -102,73 +102,9 @@ class _homeScreenState extends State<homeScreen> {
               icon: Icon(Icons.book), label: 'Booked Slots'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (selectedSlot != null) {
-            setState(() {
-              isSlotSelected = true;
-            });
-
-            ///newwwwwwwwwwwwwwwwwwwwwww
-            void showBookingDialog(BuildContext context,
-                ParkingCubit parkingCubit, ParkingSlot slot) {
-              TextEditingController plateNumberController =
-                  TextEditingController();
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text('Book Slot ${slot.id}'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Enter your vehicle plate number'),
-                        TextField(
-                          controller: plateNumberController,
-                          decoration: InputDecoration(
-                            labelText: 'Plate Number',
-                            icon: Icon(Icons.car_repair),
-                          ),
-                        ),
-                      ],
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text('Cancel'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          final plateNumber = plateNumberController.text.trim();
-                          if (plateNumber.isNotEmpty) {
-                            parkingCubit.bookSlot(slot.id, plateNumber, 1);
-                            Navigator.pop(context);
-                          } else {
-                            // ScaffoldMessenger.of(context).showSnackBar(
-                            //   SnackBar(
-                            //       content: Text(
-                            //           'Please enter a valid plate number.')),
-                            // );
-                            //tried to replace the snackbar with the custom snackbar that i made yaesterday maybe or day before yesterday.
-                            CustomSnackBar.show(
-                                context: context,
-                                backgroundColor: Colors.red,
-                                message: "Please enter a valid number plate");
-                          }
-                        },
-                        child: Text('Book Slot'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
-
-            ///
-          }
-        },
-        child: Icon(Icons.add),
+        selectedItemColor: Colors.blueAccent, // Icon color for selected item
+        unselectedItemColor: Colors.grey, // Icon color for unselected items
+        backgroundColor: Colors.white,
       ),
     );
   }

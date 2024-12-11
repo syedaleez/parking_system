@@ -59,196 +59,213 @@ class _AdminHomeState extends State<AdminHome> {
   Widget build(BuildContext context) {
     //newwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-    // return BlocListener<ParkingCubit, ParkingState>(
-    //   listener: (context, state) {
-    //     if (state is NotificationUpdated) {
-    //       setState(() {
-    //         notificationCount = state.notificationCount;
-    //       });
-    //     }
-    //   },
+    return BlocListener<AdminCubit, AdminState>(
+      listener: (context, state) {
+        // if (state is NotificationUpdated) {
+        //   setState(() {
+        //     notificationCount = state.notificationCount;
+        //   });
+        // }
+        if (state is ParkingLotCreated) {
+          CustomSnackBar.show(
+            context: context,
+            message: 'Parking Lot Created',
+          );
+        }
+        if (state is ParkingLotCreationFailure) {
+          CustomSnackBar.show(
+            context: context,
+            backgroundColor: Colors.red,
+            message: 'Failed to Create Parking Lot ',
+          );
+        }
+      },
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.logout_sharp),
-          color: Colors.white,
-        ),
-        title: const Text(
-          'Admin Dashboard',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.blueAccent,
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/notifications');
-                  setState(() {
-                    notificationCount = 0;
-                  });
-                },
-                icon: const Icon(Icons.notifications),
-                color: Colors.white,
-              ),
-              if (notificationCount > 0)
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: CircleAvatar(
-                    radius: 8,
-                    backgroundColor: Colors.red,
-                    child: Text(
-                      '$notificationCount',
-                      style: const TextStyle(color: Colors.white, fontSize: 12),
+      // return
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.logout_sharp),
+            color: Colors.white,
+          ),
+          title: const Text(
+            'Admin Dashboard',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.blueAccent,
+          actions: [
+            Stack(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/notifications');
+                    setState(() {
+                      notificationCount = 0;
+                    });
+                  },
+                  icon: const Icon(Icons.notifications),
+                  color: Colors.white,
+                ),
+                if (notificationCount > 0)
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: CircleAvatar(
+                      radius: 8,
+                      backgroundColor: Colors.red,
+                      child: Text(
+                        '$notificationCount',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 12),
+                      ),
                     ),
                   ),
+              ],
+            ),
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title
+                const Text(
+                  'Create Parking Lot',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
-            ],
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title
-              Text(
-                'Create Parking Lot',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                SizedBox(height: 16),
+
+                // Parking Lot Name Field
+                _buildTextField(
+                  controller: _nameController,
+                  label: 'Parking Lot Name',
+                  icon: Icons.local_parking,
                 ),
-              ),
-              SizedBox(height: 16),
+                SizedBox(height: 16),
 
-              // Parking Lot Name Field
-              _buildTextField(
-                controller: _nameController,
-                label: 'Parking Lot Name',
-                icon: Icons.local_parking,
-              ),
-              SizedBox(height: 16),
+                // Rank Dropdown
+                Text(
+                  'Select Rank',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 8),
 
-              // Rank Dropdown
-              Text(
-                'Select Rank',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-              SizedBox(height: 8),
+                _buildTextField(
+                  controller: _rankController,
+                  label: 'Rank',
+                  icon: Icons.abc,
+                ),
+                SizedBox(height: 20),
 
-              _buildTextField(
-                controller: _rankController,
-                label: 'Rank',
-                icon: Icons.abc,
-              ),
-              SizedBox(height: 20),
-
-              // Define Slots Section
-              Text(
-                'Define Slots',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Column(
-                children: [
-                  // Slot Key Dropdown
-                  _buildDropdown(
-                    hint: 'Slot Key (e.g., "1")',
-                    items: List.generate(10, (index) => (index + 1).toString()),
-                    onSelected: (value) {
-                      _slotKeyController.text = value ?? '';
-                    },
-                  ),
-                  SizedBox(width: 5),
-
-                  // Slot Value Dropdown
-                  _buildDropdown(
-                    hint: 'Spaces (e.g., "5")',
-                    items: List.generate(20, (index) => (index + 1).toString()),
-                    onSelected: (value) {
-                      _slotValueController.text = value ?? '';
-                    },
-                  ),
-                  SizedBox(width: 5),
-
-                  // Add Slot Button
-                  IconButton(
-                    icon: Icon(Icons.add, color: Colors.blueAccent),
-                    onPressed: () {
-                      final key = _slotKeyController.text.trim();
-                      final value =
-                          int.tryParse(_slotValueController.text.trim()) ?? 0;
-                      if (key.isNotEmpty && value > 0) {
-                        setState(() {
-                          slotsMap[key] = value;
-                        });
-                        _slotKeyController.clear();
-                        _slotValueController.clear();
-                      }
-                    },
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 10),
-
-              // Display Slots
-              if (slotsMap.isNotEmpty)
-                Wrap(
-                  spacing: 10,
-                  children: slotsMap.entries.map((entry) {
-                    return Chip(
-                      label: Text('${entry.key}: ${entry.value}'),
-                      deleteIcon: Icon(Icons.close, color: Colors.red),
-                      onDeleted: () {
-                        setState(() {
-                          slotsMap.remove(entry.key);
-                        });
+                // Define Slots Section
+                Text(
+                  'Define Slots',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                Column(
+                  children: [
+                    // Slot Key Dropdown
+                    _buildDropdown(
+                      hint: 'Slot Key (e.g., "1")',
+                      items:
+                          List.generate(10, (index) => (index + 1).toString()),
+                      onSelected: (value) {
+                        _slotKeyController.text = value ?? '';
                       },
-                    );
-                  }).toList(),
+                    ),
+                    SizedBox(width: 5),
+
+                    // Slot Value Dropdown
+                    _buildDropdown(
+                      hint: 'Spaces (e.g., "5")',
+                      items:
+                          List.generate(20, (index) => (index + 1).toString()),
+                      onSelected: (value) {
+                        _slotValueController.text = value ?? '';
+                      },
+                    ),
+                    SizedBox(width: 5),
+
+                    // Add Slot Button
+                    IconButton(
+                      icon: Icon(Icons.add, color: Colors.blueAccent),
+                      onPressed: () {
+                        final key = _slotKeyController.text.trim();
+                        final value =
+                            int.tryParse(_slotValueController.text.trim()) ?? 0;
+                        if (key.isNotEmpty && value > 0) {
+                          setState(() {
+                            slotsMap[key] = value;
+                          });
+                          _slotKeyController.clear();
+                          _slotValueController.clear();
+                        }
+                      },
+                    ),
+                  ],
                 ),
-              SizedBox(height: 20),
 
-              Center(
-                  child: CustomElevatedButton(
-                onPressed: () {
-                  final name = _nameController.text;
-                  final rank = int.tryParse(_rankController.text) ?? 0;
+                SizedBox(height: 10),
 
-                  context
-                      .read<AdminCubit>()
-                      .createParkingLot(name, rank, _slotMap);
+                // Display Slots
+                if (slotsMap.isNotEmpty)
+                  Wrap(
+                    spacing: 10,
+                    children: slotsMap.entries.map((entry) {
+                      return Chip(
+                        label: Text('${entry.key}: ${entry.value}'),
+                        deleteIcon: Icon(Icons.close, color: Colors.red),
+                        onDeleted: () {
+                          setState(() {
+                            slotsMap.remove(entry.key);
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                const SizedBox(height: 20),
 
-                  CustomSnackBar.show(
-                      context: context,
-                      message: 'Parking lot created admin sahab');
-
-                  // setState(() {
-                  //   _rankController.clear();
-                  //   _nameController.clear();
-                  //   _slotKeyController.clear();
-                  //   _slotMap.clear();
-                  // });
-                },
-                text: "Create Parking Lot",
-              )),
-              SizedBox(
-                height: 10,
-              ),
-              CustomElevatedButton(
+                Center(
+                    child: CustomElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/view_user');
+                    final name = _nameController.text;
+                    final rank = int.tryParse(_rankController.text) ?? 0;
+
+                    context
+                        .read<AdminCubit>()
+                        .createParkingLot(name, rank, _slotMap);
+                    // CustomSnackBar.show(
+                    //     context: context,
+                    //     message: 'Parking Lot Created');
+
+                    // setState(() {
+                    //   _rankController.clear();
+                    //   _nameController.clear();
+                    //   _slotKeyController.clear();
+                    //   _slotMap.clear();
+                    // });
                   },
-                  text: "View User Details"),
-            ],
+                  text: "Create Parking Lot",
+                )),
+                const SizedBox(
+                  height: 10,
+                ),
+                CustomElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/view_user');
+                    },
+                    text: "View User Details"),
+              ],
+            ),
           ),
         ),
       ),
