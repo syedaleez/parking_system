@@ -163,7 +163,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -177,6 +176,7 @@ class ParkingLoading extends ParkingState {}
 
 class ParkingSuccess extends ParkingState {
   final String message;
+
   ParkingSuccess(this.message);
 }
 
@@ -185,9 +185,18 @@ class NotificationUpdated extends ParkingState {
   NotificationUpdated(this.notificationCount);
 }
 
+// class ParkingLoaded extends ParkingState {
+//   final String? userBookedSlotId;
+//   final List<ParkingSlot> parkingSlots;
+//   ParkingLoaded(this.parkingSlots, this.userBookedSlotId);
+// }
+
 class ParkingLoaded extends ParkingState {
   final List<ParkingSlot> parkingSlots;
-  ParkingLoaded(this.parkingSlots);
+
+  ParkingLoaded(
+    this.parkingSlots,
+  ); // Named parameters
 }
 
 class BookedSlotsLoaded extends ParkingState {
@@ -205,15 +214,6 @@ class ParkingError extends ParkingState {
   final String errorMessage;
   ParkingError(this.errorMessage);
 }
-// class ParkingCubit extends Cubit<ParkingState> {
-//   int notificationCount = 0;
-
-//   ParkingCubit() : super(ParkingInitial());
-
-//   void initialize() {
-//     listenForNewBookings();
-//   }
-// }
 
 class ParkingCubit extends Cubit<ParkingState> {
   ParkingCubit() : super(ParkingLoading());
@@ -223,43 +223,6 @@ class ParkingCubit extends Cubit<ParkingState> {
   List<ParkingSlot> slots = [];
   Set<int> bookedSlotIds = {}; // Keep track of booked slots globally
   int notificationCount = 0;
-
-  /// Fetch and Monitor Parking Slots
-  // Future<void> fetchAndMonitorSlots() async {
-  //   try {
-  //     emit(ParkingLoading());
-
-  //     // Fetch slots from API
-  //     final response = await http
-  //         .get(Uri.parse('http://192.168.10.23:5005/parking_lot/status'))
-  //         .timeout(const Duration(seconds: 15));
-
-  //     if (response.statusCode == 200) {
-  //       final data = json.decode(response.body);
-
-  //       if (data['data'] is List) {
-  //         slots = (data['data'] as List)
-  //             .map((json) => ParkingSlot.fromJson(json))
-  //             .toList();
-
-  //         // Listen to Firestore for global booked slots
-  //         _firestore.collection('booked_slots').snapshots().listen((snapshot) {
-  //           bookedSlotIds =
-  //               snapshot.docs.map((doc) => doc['slotId'] as int).toSet();
-  //           _updateSlotAvailability();
-  //         });
-
-  //         emit(ParkingLoaded(slots));
-  //       } else {
-  //         emit(ParkingError('Invalid format of slot data.'));
-  //       }
-  //     } else {
-  //       emit(ParkingError('Failed to load parking slots.'));
-  //     }
-  //   } catch (e) {
-  //     emit(ParkingError('Error: ${e.toString()}'));
-  //   }
-  // }
 
 //updated monitor wala function
 
@@ -287,7 +250,10 @@ class ParkingCubit extends Cubit<ParkingState> {
             _updateSlotAvailability();
           });
 
-          emit(ParkingLoaded(slots));
+          // emit(ParkingLoaded(slots,)),
+          emit(ParkingLoaded(
+            slots,
+          ));
         } else {
           emit(ParkingError('Invalid format of slot data.'));
         }
@@ -300,16 +266,6 @@ class ParkingCubit extends Cubit<ParkingState> {
           ParkingError('Error fetching and monitoring slots: ${e.toString()}'));
     }
   }
-
-// void _updateSlotAvailability() {
-//   // Update the slot availability based on the booked slots from Firestore
-//   for (var slot in slots) {
-//     slot.isReserved = bookedSlotIds.contains(slot.id);
-//   }
-
-  // Emit the updated state to refresh UI
-  // emit(ParkingLoaded(slots));
-// }
 
 //function monitor wala
 
@@ -354,8 +310,7 @@ class ParkingCubit extends Cubit<ParkingState> {
               .toList(),
           //plate number fetchhh
           plateNumber: data['plateNumber'] as String? ?? 'Unknown',
-          // .map((item) => int.tryParse(item.toString()) ?? 0)
-          // .toList(),
+
           createdAt:
               (data['createdAt'] as Timestamp?)?.toDate().toIso8601String() ??
                   DateTime.now().toIso8601String(), // Convert to String

@@ -6,34 +6,33 @@ class CustomTextField extends StatelessWidget {
   final IconData icon;
   final bool obscureText;
   final TextInputType keyboardType;
+  final String? Function(String?)? validator; // Add validator parameter
 
-  const CustomTextField(
-      {Key? key,
-      required this.controller,
-      required this.labelText,
-      required this.icon,
-      this.obscureText = false,
-      this.keyboardType = TextInputType.text})
-      : super(key: key);
+  CustomTextField({
+    required this.controller,
+    required this.labelText,
+    required this.icon,
+    this.obscureText = false,
+    this.keyboardType = TextInputType.text,
+    this.validator, // Add validator parameter
+  });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: labelText,
-// obscureText:obscureText,
         prefixIcon: Icon(icon, color: Colors.blueAccent),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
         ),
         filled: true,
-        // obscureText:obscureText,
-
         fillColor: Colors.grey[200],
       ),
+      validator: validator, // Use the validator
     );
   }
 }

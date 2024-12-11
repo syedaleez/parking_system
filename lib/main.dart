@@ -14,66 +14,7 @@ import 'navigation/route_generator.dart';
 import 'repository/auth_repo.dart';
 import 'navigation/route_name.dart';
 
-// void main() {
-//   runApp(MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   final AuthRepository authRepository = AuthRepository();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocProvider(
-
-//       create: (context) => AuthCubit(authRepository),
-
-//       child: MaterialApp(
-//         title: 'Parking System',
-//         theme: ThemeData(primarySwatch: Colors.blue),
-//         initialRoute: splash,
-//         // routes:
-//         //  {
-//         //   '/login': (context) => SignInScreen(),
-//         //   // '/home': (context) => HomePage(), // Add home page navigation
-//         // },
-
-//         onGenerateRoute: RouteGenerator.generateRoute,
-//         debugShowCheckedModeBanner: false,
-//       )
-
-//     );
-//   }
-// }
-
-//new code for main.dart
-// void main() {
-//   runApp(MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   final AuthRepository authRepository = AuthRepository();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MultiBlocProvider(
-//       providers: [
-//         BlocProvider<AuthCubit>(
-//           create: (context) => AuthCubit(authRepository),
-//         ),
-//         BlocProvider<RegisterCubit>(
-//           create: (context) => RegisterCubit(authRepository),
-//         ),
-//       ],
-//       child: MaterialApp(
-//         title: 'Parking System',
-//         theme: ThemeData(primarySwatch: Colors.blue),
-//         initialRoute: splash,  // Replace with your actual splash route constant
-//         onGenerateRoute: RouteGenerator.generateRoute,
-//         debugShowCheckedModeBanner: false,
-//       ),
-//     );
-//   }
-// }
+//
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -99,17 +40,10 @@ class MyApp extends StatelessWidget {
         BlocProvider<AdminCubit>(
           create: (context) => AdminCubit(AdminRepository()),
         ),
-        // BlocProvider<UserCubit>(
-        //   create: (context) => UserCubit(UserRepository()),
-        //   // child: UserProfileTab(),
-        // ),
         BlocProvider(
           create: (context) => UserCubit(userRepository),
           child: UserProfileTab(),
         ),
-        // BlocProvider<ParkingCubit>(
-        //   create: (context) => ParkingCubit(),
-        // ),
         BlocProvider<ParkingCubit>(
           create: (context) =>
               ParkingCubit()..fetchAndMonitorSlots(), // Fetch once

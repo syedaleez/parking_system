@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class NotificationsScreen extends StatelessWidget {
   @override
@@ -12,7 +13,28 @@ class NotificationsScreen extends StatelessWidget {
         stream:
             FirebaseFirestore.instance.collection('booked_slots').snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return CircularProgressIndicator();
+          if (!snapshot.hasData) {
+            //  CircularProgressIndicator();
+            return ListView.builder(
+              itemCount: 12, // Placeholder count for shimmer effect
+              itemBuilder: (context, index) => Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8), // Spacing around the shimmer
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    height: 70, // Height of the shimmer box
+                  ),
+                ),
+              ),
+            );
+          }
           final notifications = snapshot.data!.docs;
           // return ListView.builder(
           //   itemCount: notifications.length,
