@@ -1,11 +1,8 @@
 //new with designnnnnnnnnn
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking_system/cubit/parking_cubit.dart';
 import 'package:parking_system/screens/custom_widges/custom_snackbar.dart';
-import 'package:parking_system/screens/custom_widges/custom_textfield.dart';
-import '../../models/parkingSlot_model.dart'; // Assuming you have a ParkingSlot model
+import '../../models/parkingSlot_model.dart'; //
 import 'navBar/book_slot_tab.dart';
 import 'navBar/homeTab.dart';
 import 'navBar/user_profile_tab.dart';

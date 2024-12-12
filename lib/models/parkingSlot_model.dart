@@ -62,7 +62,7 @@ class ParkingSlot {
       updatedAt: this.updatedAt,
       isReserved: isReserved ?? this.isReserved,
       plateNumber: plateNumber ??
-          this.plateNumber, // If no value is passed, retain the current value
+          this.plateNumber, // If no value is passed, retain xurrent value
     );
   }
 }

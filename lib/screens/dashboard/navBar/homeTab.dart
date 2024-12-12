@@ -171,7 +171,7 @@ class ParkingSlotList extends StatelessWidget {
           content: ParkingForm(
             slotId: slot.id,
             vehicleSizeId: slot
-                .slotSizeId, // Assuming slotSizeId is the vehicleSizeId because of API
+                .slotSizeId, // Asssuming slotSizeId is the vehicleSizeId because of API
           ),
         );
       },

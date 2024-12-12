@@ -43,44 +43,7 @@ class ViewUserDetails extends StatelessWidget {
             itemCount: bookedSlots.length,
             itemBuilder: (context, index) {
               final slot = bookedSlots[index];
-              return
-                  // ListTile(
-                  //   leading: Icon(Icons.local_parking, color: Colors.green),
-                  //   title: Text('Slot ID: ${slot['slotId']}'),
-                  //   // subtitle: Text(
-                  //   //   'User: ${slot['userName']}\n'
-                  //   //   'Plate: ${slot['plateNumber']}\n'
-                  //   //   'Email: ${slot['userEmail']}\n'
-                  //   //   'Booked At: ${DateFormat.yMMMd().add_jm().format(slot['timestamp'])}',
-                  //   // ),
-
-                  //   subtitle: RichText(
-                  //     text: TextSpan(
-                  //       style: Theme.of(context)
-                  //           .textTheme
-                  //           .bodyMedium
-                  //           ?.copyWith(color: Colors.black),
-                  //       children: [
-                  //         TextSpan(text: 'User: ${slot['userName']}\n'),
-                  //         TextSpan(
-                  //             text: 'Plate: ',
-                  //             style: TextStyle(fontWeight: FontWeight.normal)),
-                  //         TextSpan(
-                  //           text: '${slot['plateNumber']}\n',
-                  //           style: TextStyle(fontWeight: FontWeight.bold),
-                  //         ),
-                  //         TextSpan(text: 'Email: ${slot['userEmail']}\n'),
-                  //         TextSpan(
-                  //           text:
-                  //               'Booked At: ${DateFormat.yMMMd().add_jm().format(slot['timestamp'])}',
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  //   isThreeLine: true,
-                  // );
-
-                  Padding(
+              return Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16, vertical: 8), // Spacing around the ListTile
                 child: Container(

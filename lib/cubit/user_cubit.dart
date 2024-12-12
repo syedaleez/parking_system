@@ -31,52 +31,7 @@ class UserCubit extends Cubit<UserState> {
 
   UserCubit(this.userRepository) : super(UserInitial());
 
-  // Fetch user data after successful login or registration
-  // Future<void> fetchUserData() async {
-  //   emit(UserLoading());
-  //   try {
-  //     final data = await userRepository.getUserData();
-  //     emit(UserDataLoaded(data));
-  //   } catch (e) {
-  //     emit(UserError('Failed to load user data: ${e.toString()}'));
-  //   }
-  // }
-
   final userId = FirebaseAuth.instance.currentUser?.uid;
-
-  // Future<void> fetchUserProfile(String userId) async {
-  //   emit(UserLoading());
-  //   try {
-  //     final userProfile = await userRepository.getUserProfile();
-  //     emit(UserDataLoaded(userProfile));
-  //   } catch (e) {
-  //     print(e.toString());
-  //     emit(UserError('Failed to load profile: ${e.toString()}'));
-  //   }
-  // }
-
-//  Future<void> fetchUserProfile() async {
-//     emit(UserLoading());
-//     try {
-//       final userProfile = await userRepository.getUserProfile();
-//       emit(UserDataLoaded(userProfile));
-//     } catch (e) {
-//       emit(UserError('Failed to load profile: ${e.toString()}'));
-//     }
-//   }
-
-//sahi wala tha yeeeeeee
-//   Future<void> fetchUserProfile() async {
-//     emit(UserLoading());
-//     try {
-//       final userProfile = await userRepository.getUserProfile();
-//       print('Fetched User Data@@@@@@@@: $userProfile');
-//       emit(UserDataLoaded(userProfile));
-//     } catch (e) {
-//       emit(UserError('Failed to load profile: ${e.toString()}'));
-//     }
-//   }
-// }
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

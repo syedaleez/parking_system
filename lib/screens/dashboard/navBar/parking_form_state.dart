@@ -33,12 +33,12 @@ class ParkingForm extends StatelessWidget {
         children: [
           TextFormField(
             controller: _plateNumberController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Plate Number',
               border: OutlineInputBorder(),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               final plateNumber = _plateNumberController.text;

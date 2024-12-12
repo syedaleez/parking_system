@@ -28,11 +28,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => ViewUserDetails());
       case '/notifications':
         return MaterialPageRoute(builder: (_) => NotificationsScreen());
-      // Example routes for other screens
-      // case '/admin':
-      //   return MaterialPageRoute(builder: (_) => AdminPanelScreen());
-      // case '/customer':
-      //   return MaterialPageRoute(builder: (_) => CustomerPanelScreen());
+      //
       default:
         // Return an error page for undefined routes
         return _errorRoute();
