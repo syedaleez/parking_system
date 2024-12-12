@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:parking_system/navigation/route_name.dart';
 import '../../../cubit/auth_cubit.dart';
 import '../../../cubit/user_cubit.dart';
 import '../../../states/user_state.dart';
@@ -87,7 +88,7 @@ class UserProfileTab extends StatelessWidget {
                     icon: Icon(Icons.logout_outlined, color: Colors.blueAccent),
                     onPressed: () {
                       context.read<AuthCubit>().logout();
-                      Navigator.pushReplacementNamed(context, '/login');
+                      Navigator.pushReplacementNamed(context, login);
                     },
                   ),
                 ),
