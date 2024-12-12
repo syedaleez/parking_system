@@ -195,9 +195,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking_system/cubit/auth_cubit.dart';
-import 'package:parking_system/screens/custom_widges/custom_elevatedButton.dart';
-import 'package:parking_system/screens/custom_widges/custom_snackbar.dart';
-import 'package:parking_system/screens/custom_widges/custom_textfield.dart';
+import 'package:parking_system/screens/common_widges/custom_elevated_button.dart';
+import 'package:parking_system/screens/common_widges/custom_snackbar.dart';
+import 'package:parking_system/screens/common_widges/custom_text_field.dart';
 import '../../cubit/register_cubit.dart';
 
 class RegistrationScreen extends StatefulWidget {

@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking_system/screens/custom_widges/custom_elevatedButton.dart';
-import 'package:parking_system/screens/custom_widges/custom_snackbar.dart';
+import 'package:parking_system/navigation/route_name.dart';
+import 'package:parking_system/screens/common_widges/custom_elevated_button.dart';
+import 'package:parking_system/screens/common_widges/custom_snackbar.dart';
 import '../../cubit/admin_cubit.dart';
 import '../../states/admin_state.dart';
 
@@ -75,7 +76,7 @@ class _AdminHomeState extends State<AdminHome> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/login');
+              Navigator.pushReplacementNamed(context, login);
             },
             icon: Icon(Icons.logout_sharp),
             color: Colors.white,
@@ -91,7 +92,7 @@ class _AdminHomeState extends State<AdminHome> {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/notifications');
+                    Navigator.pushNamed(context, notification);
                     setState(() {
                       notificationCount = 0;
                     });

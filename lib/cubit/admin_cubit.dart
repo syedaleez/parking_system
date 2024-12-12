@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/parking_lot_model.dart';
-import '../repository/admin_repo.dart';
+import '../repository/admin_repository.dart';
 import '../states/admin_state.dart';
 
 class AdminAuthenticated extends AdminState {}

@@ -2,12 +2,10 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:parking_system/cubit/user_cubit.dart';
-// import 'package:parking_system/screens/dashboard/admin_home.dart';
+import 'package:parking_system/navigation/route_name.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../repository/auth_repo.dart';
-// import 'parking_cubit.dart';
+import '../repository/auth_repository.dart';
 
 // States
 class AuthState {}
@@ -72,17 +70,15 @@ class AuthCubit extends Cubit<AuthState> {
 
     emit(AuthLoading());
     try {
-      // final role =
-      //     await authRepository.checkRole(email); // Check role (admin/user)
       bool isAuthenticated = await authRepository.login(email, password);
       final role = await authRepository.checkRole(email);
       print('Role@@@@@@: $role');
 
       if (role == 'admin') {
         emit(AdminAuthenticated());
-        Navigator.pushReplacementNamed(context, '/admin_home');
+        Navigator.pushReplacementNamed(context, adminHome);
         //
-        print('@@@@@@@@@@@@@@@@@trueeeeeee');
+        print('trueeeeee');
         return;
       } else {
         emit(UserAuthenticated()); // User role detected

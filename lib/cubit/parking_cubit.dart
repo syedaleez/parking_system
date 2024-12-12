@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
-import '../models/parkingSlot_model.dart';
+import '../models/parking_slot_model.dart';
 
 class ParkingState {}
 
@@ -17,6 +17,11 @@ class ParkingSuccess extends ParkingState {
   final String message;
 
   ParkingSuccess(this.message);
+}
+
+class ParkingPlateNumberFetched extends ParkingState {
+  final String numberPlate;
+  ParkingPlateNumberFetched(this.numberPlate);
 }
 
 class NotificationUpdated extends ParkingState {
@@ -273,6 +278,29 @@ class ParkingCubit extends Cubit<ParkingState> {
       emit(ParkingError('Error parking vehicle: $e'));
     }
   }
+
+  //function to fetch the plateNumber to show in dialog of booking slot
+
+  Future<void> fetchPlateNumber(String userId) async {
+    emit(ParkingLoading());
+    try {
+      final userDoc = await _firestore.collection('users').doc(userId).get();
+      if (userDoc.exists) {
+        final numberPlate = userDoc.get('plateNumber') as String?;
+        if (numberPlate != null) {
+          emit(ParkingPlateNumberFetched(numberPlate));
+        } else {
+          emit(ParkingError('Plate number not found for the user.'));
+        }
+      } else {
+        emit(ParkingError('User not found.'));
+      }
+    } catch (e) {
+      emit(ParkingError('Error fetching plate number: $e'));
+    }
+  }
+
+  //plate function end here
   //exit slot function
 
   Future<void> exitSlot(int slotId) async {

@@ -1,11 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../cubit/parking_cubit.dart';
-import '../../../models/parkingSlot_model.dart';
+import '../../../models/parking_slot_model.dart';
 import 'parking_form_state.dart';
 
 class HomeTab extends StatelessWidget {
   const HomeTab({Key? key}) : super(key: key);
+  String? getCurrentUserId() {
+    final user = FirebaseAuth.instance.currentUser;
+    return user?.uid;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +84,8 @@ class ParkingSlotList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final userId=getCurrentUser();
+
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -91,8 +99,31 @@ class ParkingSlotList extends StatelessWidget {
         final slot = slots[index];
         return GestureDetector(
           onTap: () {
+            // if (!slot.isReserved) {
+            //   ParkingCubit.fetchPlateNumber(userId);
+            //   // showBookingDialog(context, plateNumber,slot);
+            // } else {
+            //   ScaffoldMessenger.of(context).showSnackBar(
+            //     SnackBar(content: Text('Slot is already booked.')),
+            //   );
+            // }
+
+            final parkingCubit = context.read<ParkingCubit>();
+            // String userId
+
             if (!slot.isReserved) {
-              _showSlotDetails(context, slot);
+              // parkingCubit.fetchPlateNumber(userId); // Fetch plate number
+
+              // Listen for state changes
+              parkingCubit.stream.listen((state) {
+                if (state is ParkingPlateNumberFetched) {
+                  _showSlotDetails(context, slot);
+                } else if (state is ParkingError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.errorMessage)),
+                  );
+                }
+              });
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Slot is already booked.')),
@@ -167,7 +198,7 @@ class ParkingSlotList extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Enter Vehicle Details'),
+          title: Text('Confirm Your Booking'),
           content: ParkingForm(
             slotId: slot.id,
             vehicleSizeId: slot
@@ -178,3 +209,58 @@ class ParkingSlotList extends StatelessWidget {
     );
   }
 }
+// void showBookingDialog(BuildContext context,  plateNumber, ParkingSlot slot) {
+//   showDialog(
+//     context: context,
+//     builder: (context) {
+//       return AlertDialog(
+//         title: const Text('Confirm Booking'),
+//         content: Text('Your number plate: $plateNumber\nSlot: $slot\nProceed?'),
+//         actions: [
+//           TextButton(
+//             onPressed: () {
+//               Navigator.pop(context); // Close the dialog
+//             },
+//             child: Text('Cancel'),
+//           ),
+//           TextButton(
+//             onPressed: () {
+//               // Book the slot
+//               FirebaseFirestore.instance
+//                   .collection('booked_slots')
+//                   .add({'number_plate': plateNumber, 'slot': slot});
+//               Navigator.pop(context); // Close the dialog
+//               ScaffoldMessenger.of(context).showSnackBar(
+//                 SnackBar(content: Text('Slot $slot booked successfully!')),
+//               );
+//             },
+//             child: Text('OK'),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
+// Future<String?> fetchPlateNumber(String userId) async {
+//   try {
+//     // Fetch user document from Firestore
+//     DocumentSnapshot userDoc =
+//         await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+//     if (userDoc.exists) {
+//       // Extract the plate number field
+//       // final numberPlate = fetchPlateNumber(userId);
+//       showBookingDialog(context, numberPlate, slots);
+//       return userDoc.get('plateNumber') as String?;
+      
+//     } 
+//     else {
+//       print('User document not found');
+//       return null;
+//     }
+//   } catch (e) {
+//     print('Error fetching plate number: $e');
+//     return null;
+//   }
+// }
+

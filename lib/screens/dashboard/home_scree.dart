@@ -1,8 +1,8 @@
 //new with designnnnnnnnnn
 
 import 'package:flutter/material.dart';
-import 'package:parking_system/screens/custom_widges/custom_snackbar.dart';
-import '../../models/parkingSlot_model.dart'; //
+import 'package:parking_system/screens/common_widges/custom_snackbar.dart';
+import '../../models/parking_slot_model.dart'; //
 import 'navBar/book_slot_tab.dart';
 import 'navBar/homeTab.dart';
 import 'navBar/user_profile_tab.dart';

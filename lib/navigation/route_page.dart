@@ -1,36 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:parking_system/navigation/route_name.dart';
-import 'package:parking_system/screens/admin_pannel/User_Details/view_user_details.dart';
-import 'package:parking_system/screens/admin_pannel/admin_home.dart';
+import 'package:parking_system/screens/admin_pannel/view_user_details.dart';
+import 'package:parking_system/screens/admin_pannel/admin_home_screen.dart';
 import 'package:parking_system/screens/admin_pannel/notification_screen.dart';
 import 'package:parking_system/screens/dashboard/home_scree.dart';
 
-import '../screens/signIn_signUp/SignInScreen.dart';
-import '../screens/signIn_signUp/register_screen.dart';
-import '../screens/splash_scree.dart/splash.dart';
+import '../screens/auth/sign_in_screen.dart';
+import '../screens/auth/register_screen.dart';
+import '../screens/splash/splash_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final args = settings.arguments;
+    // final args = settings.arguments;
 
     switch (settings.name) {
       case splash:
         return MaterialPageRoute(builder: (_) => SplashScreen());
-      case '/login':
+      case login:
         return MaterialPageRoute(builder: (_) => SignInScreen());
-      case '/register':
+      case register:
         return MaterialPageRoute(builder: (_) => RegistrationScreen());
-      case '/home':
+      case home:
         return MaterialPageRoute(builder: (_) => homeScreen());
-      case '/admin_home':
+      case adminHome:
         return MaterialPageRoute(builder: (_) => AdminHome());
-      case '/view_user':
+      case viewUser:
         return MaterialPageRoute(builder: (_) => ViewUserDetails());
-      case '/notifications':
+      case notification:
         return MaterialPageRoute(builder: (_) => NotificationsScreen());
-      //
+
       default:
-        // Return an error page for undefined routes
         return _errorRoute();
     }
   }
@@ -39,8 +38,8 @@ class RouteGenerator {
     return MaterialPageRoute(
       builder: (_) {
         return Scaffold(
-          appBar: AppBar(title: Text('Error')),
-          body: Center(child: Text('Page not found')),
+          appBar: AppBar(title: const Text('Error')),
+          body: const Center(child: Text('Page not found')),
         );
       },
     );

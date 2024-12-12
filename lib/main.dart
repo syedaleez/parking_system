@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking_system/cubit/admin_cubit.dart';
 import 'package:parking_system/cubit/user_cubit.dart';
-import 'package:parking_system/repository/admin_repo.dart';
-import 'package:parking_system/repository/user_repo.dart';
+import 'package:parking_system/repository/admin_repository.dart';
+import 'package:parking_system/repository/user_repository.dart';
 import 'package:parking_system/screens/dashboard/navBar/user_profile_tab.dart';
 import 'cubit/auth_cubit.dart';
 import 'cubit/parking_cubit.dart';
 import 'cubit/register_cubit.dart';
-import 'navigation/route_generator.dart';
-import 'repository/auth_repo.dart';
+import 'navigation/route_page.dart';
+import 'repository/auth_repository.dart';
 import 'navigation/route_name.dart';
 
 //

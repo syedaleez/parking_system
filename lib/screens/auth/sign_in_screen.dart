@@ -251,12 +251,13 @@
 //form validation key in sign in
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking_system/screens/custom_widges/custom_elevatedButton.dart';
-import 'package:parking_system/screens/custom_widges/custom_textfield.dart';
+import 'package:parking_system/navigation/route_name.dart';
+import 'package:parking_system/screens/common_widges/custom_elevated_button.dart';
+import 'package:parking_system/screens/common_widges/custom_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../cubit/auth_cubit.dart';
 import '../../cubit/parking_cubit.dart';
-import '../custom_widges/custom_snackbar.dart';
+import '../common_widges/custom_snackbar.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -303,7 +304,7 @@ class _SignInScreenState extends State<SignInScreen> {
               );
               context.read<ParkingCubit>().fetchAndMonitorSlots();
 
-              Navigator.pushReplacementNamed(context, '/home');
+              Navigator.pushReplacementNamed(context, home);
             } else if (state is AuthFailure) {
               CustomSnackBar.show(
                 context: context,
@@ -342,8 +343,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           controller: _emailController,
                           decoration: InputDecoration(
                             labelText: 'Email',
-                            prefixIcon:
-                                Icon(Icons.email, color: Colors.blueAccent),
+                            prefixIcon: const Icon(Icons.email,
+                                color: Colors.blueAccent),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
@@ -368,8 +369,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           obscureText: true,
                           decoration: InputDecoration(
                             labelText: 'Password',
-                            prefixIcon:
-                                Icon(Icons.lock, color: Colors.blueAccent),
+                            prefixIcon: const Icon(Icons.lock,
+                                color: Colors.blueAccent),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
@@ -462,7 +463,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         Center(
                           child: TextButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/register');
+                              Navigator.pushNamed(context, register);
                             },
                             child: const Text(
                               'Register',

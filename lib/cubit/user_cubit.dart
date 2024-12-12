@@ -23,7 +23,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../repository/user_repo.dart';
+import '../repository/user_repository.dart';
 import '../states/user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
