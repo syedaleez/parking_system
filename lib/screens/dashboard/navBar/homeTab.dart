@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:parking_system/states/admin_state.dart';
+import 'package:parking_system/states/user_state.dart';
 import '../../../cubit/parking_cubit.dart';
 import '../../../models/parking_slot_model.dart';
 import 'parking_form_state.dart';
@@ -98,38 +100,52 @@ class ParkingSlotList extends StatelessWidget {
       itemBuilder: (context, index) {
         final slot = slots[index];
         return GestureDetector(
+          // onTap: () {
+          // // if (!slot.isReserved) {
+          // //   ParkingCubit.fetchPlateNumber(userId);
+          // //   // showBookingDialog(context, plateNumber,slot);
+          // // } else {
+          // //   ScaffoldMessenger.of(context).showSnackBar(
+          // //     SnackBar(content: Text('Slot is already booked.')),
+          // //   );
+          // // }
+
+          // final parkingCubit = context.read<ParkingCubit>();
+          // // String userId
+
+          // if (!slot.isReserved) {
+          //   // parkingCubit.fetchPlateNumber(userId); // Fetch plate number
+
+          //   // Listen for state changes
+          //   // parkingCubit.stream.listen((state) {
+          //     // if (state is UserDataLoaded) {
+          //     //   _showSlotDetails(context, slot);
+          //     // }
+          //     if (!slot.isReserved) {
+          //       _showSlotDetails(context, slot);
+          //     } else if (state is ParkingError) {
+          //       ScaffoldMessenger.of(context).showSnackBar(
+          //         SnackBar(content: Text(state.errorMessage)),
+          //       );
+          //     }
+          //   }
+          //   // );
+          // // }
+          //  else {
+          //   ScaffoldMessenger.of(context).showSnackBar(
+          //     SnackBar(content: Text('Slot is already booked.')),
+          //   );
+          // }
           onTap: () {
-            // if (!slot.isReserved) {
-            //   ParkingCubit.fetchPlateNumber(userId);
-            //   // showBookingDialog(context, plateNumber,slot);
-            // } else {
-            //   ScaffoldMessenger.of(context).showSnackBar(
-            //     SnackBar(content: Text('Slot is already booked.')),
-            //   );
-            // }
-
-            final parkingCubit = context.read<ParkingCubit>();
-            // String userId
-
             if (!slot.isReserved) {
-              // parkingCubit.fetchPlateNumber(userId); // Fetch plate number
-
-              // Listen for state changes
-              parkingCubit.stream.listen((state) {
-                if (state is ParkingPlateNumberFetched) {
-                  _showSlotDetails(context, slot);
-                } else if (state is ParkingError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.errorMessage)),
-                  );
-                }
-              });
+              _showSlotDetails(context, slot);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Slot is already booked.')),
               );
             }
           },
+
           child: Container(
             decoration: BoxDecoration(
               color: slot.isReserved ? Colors.green : Colors.red,

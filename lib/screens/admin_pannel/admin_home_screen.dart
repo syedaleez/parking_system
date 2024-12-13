@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking_system/navigation/route_name.dart';
 import 'package:parking_system/screens/common_widges/custom_elevated_button.dart';
 import 'package:parking_system/screens/common_widges/custom_snackbar.dart';
+import 'package:parking_system/screens/dashboard/navBar/homeTab.dart';
 import '../../cubit/admin_cubit.dart';
 import '../../states/admin_state.dart';
 
@@ -176,49 +177,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   SizedBox(height: 10),
 
-                  // Slot Input Fields
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: _buildDropdown(
-                  //         hint: 'Slot Key (e.g., "1")',
-                  //         items: List.generate(
-                  //             10, (index) => (index + 1).toString()),
-                  //         onSelected: (value) {
-                  //           _slotKeyController.text = value ?? '';
-                  //         },
-                  //       ),
-                  //     ),
-                  //     SizedBox(width: 5),
-                  //     Expanded(
-                  //       child: _buildDropdown(
-                  //         hint: 'Spaces (e.g., "5")',
-                  //         items: List.generate(
-                  //             20, (index) => (index + 1).toString()),
-                  //         onSelected: (value) {
-                  //           _slotValueController.text = value ?? '';
-                  //         },
-                  //       ),
-                  //     ),
-                  //     IconButton(
-                  //       icon: Icon(Icons.add, color: Colors.blueAccent),
-                  //       onPressed: () {
-                  //         final key = _slotKeyController.text.trim();
-                  //         final value =
-                  //             int.tryParse(_slotValueController.text.trim()) ??
-                  //                 0;
-                  //         if (key.isNotEmpty && value > 0) {
-                  //           setState(() {
-                  //             slotsMap[key] = value;
-                  //           });
-                  //           _slotKeyController.clear();
-                  //           _slotValueController.clear();
-                  //         }
-                  //       },
-                  //     ),
-                  //   ],
-                  // ),
-
                   Column(
                     children: [
                       SizedBox(
@@ -326,12 +284,22 @@ class _AdminHomeState extends State<AdminHome> {
                       text: "Create Parking Lot",
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   CustomElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/view_user');
+                      Navigator.pushNamed(context, viewUser);
                     },
                     text: "View User Details",
+                  ),
+                  const SizedBox(height: 10),
+
+                  CustomElevatedButton(
+                    onPressed: () {
+                      // Navigator.pushNamed(context, jhjhjhjhj);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => HomeTab()));
+                    },
+                    text: "View All Slots",
                   ),
                 ],
               ),
