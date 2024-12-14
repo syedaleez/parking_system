@@ -4,30 +4,34 @@ class CustomSnackBar {
   static void show({
     required BuildContext context,
     required String message,
-    Color backgroundColor = Colors.green,
+    Color backgroundColor = Colors.green, // Default background color
+    Color textColor = Colors.white, // Default text color
     IconData? icon,
-    Duration duration = const Duration(seconds: 3),
+    Color iconColor = Colors.white, // Default icon color
+    Duration duration = const Duration(seconds: 2), // Default duration
+    OutlinedBorder? shape, // Customizable shape
   }) {
     final snackBar = SnackBar(
       content: Row(
         children: [
           if (icon != null) ...[
-            Icon(icon, color: Colors.white),
+            Icon(icon, color: iconColor),
             const SizedBox(width: 10),
           ],
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style: TextStyle(color: textColor, fontSize: 16),
             ),
           ),
         ],
       ),
       backgroundColor: backgroundColor,
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      shape: shape ??
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // Default shape
+          ),
       duration: duration,
       margin: const EdgeInsets.all(15),
       elevation: 6,

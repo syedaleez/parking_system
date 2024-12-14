@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking_system/routes/route_name.dart';
-import 'package:parking_system/screens/common_widges/custom_elevated_button.dart';
+import 'package:parking_system/screens/common_widgets/custom_elevated_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../logic/authenticate/auth_cubit.dart';
 import '../../logic/parking/parking_cubit.dart';
-import '../common_widges/custom_snackbar.dart';
+import '../common_widgets/custom_snackbar.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -123,7 +123,7 @@ class SignInScreenState extends State<SignInScreen> {
                         const SizedBox(height: 20),
                         TextFormField(
                           controller: _passwordController,
-                          obscureText: !obscureText,
+                          obscureText: obscureText,
                           decoration: InputDecoration(
                             labelText: 'Password',
                             prefixIcon: const Icon(Icons.lock,
@@ -131,8 +131,8 @@ class SignInScreenState extends State<SignInScreen> {
                             suffixIcon: IconButton(
                               icon: Icon(
                                 obscureText
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                               ),
                               onPressed: togglePasswordVisibility,
                             ),
@@ -178,6 +178,9 @@ class SignInScreenState extends State<SignInScreen> {
                         CustomElevatedButton(
                           onPressed: () {
                             context.read<AuthCubit>().regenerateCaptcha();
+                            setState(() {
+                              _captchaController.clear();
+                            });
                           },
                           text: 'Refresh Captcha',
                           fontSize: 14,

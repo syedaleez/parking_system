@@ -60,6 +60,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthInitial(currentCaptcha));
   }
 
+//login function to navigate user to home page according to role i.e. admin or user
   Future<void> login(BuildContext context, String email, String password,
       String captchaInput, bool rememberMe) async {
     if (captchaInput != currentCaptcha) {
@@ -82,6 +83,9 @@ class AuthCubit extends Cubit<AuthState> {
         return;
       } else {
         emit(UserAuthenticated()); // User role detected
+        if (context.mounted) {
+          Navigator.pushReplacementNamed(context, home);
+        }
       }
 
       if (isAuthenticated) {

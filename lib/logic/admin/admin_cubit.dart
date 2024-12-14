@@ -29,17 +29,14 @@ class AdminCubit extends Cubit<AdminState> {
 
     final parkingLot = ParkingLot(name: name, rank: rank, nSlotsKey: nSlotsKey);
 
-    emit(ParkingLotCreated());
+    emit(ParkingLotLoading());
     try {
       await adminRepository.createParkingLot(parkingLot);
       emit(ParkingLotCreated());
-      log("parking lot createdddddddddddddddddddddd");
+      log("parking lot createddddddddddddd");
     } catch (e) {
-      emit(ParkingLotCreationFailure(
-
-          //  print("faileddddddddddddddd");
-          e.toString()));
-      log("failedddddddddddddd");
+      emit(ParkingLotCreationFailure(e.toString()));
+      log("failedddddddddddddd with this exception{$e}");
     }
   }
 }

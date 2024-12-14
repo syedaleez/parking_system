@@ -1,9 +1,9 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking_system/screens/common_widges/custom_elevated_button.dart';
-import 'package:parking_system/screens/common_widges/custom_snackbar.dart';
-import 'package:parking_system/screens/common_widges/custom_text_field.dart';
+import 'package:parking_system/screens/common_widgets/custom_elevated_button.dart';
+import 'package:parking_system/screens/common_widgets/custom_snackbar.dart';
+import 'package:parking_system/screens/common_widgets/custom_text_field.dart';
 import '../../logic/authenticate/register_cubit.dart';
 
 class RegistrationScreen extends StatefulWidget {

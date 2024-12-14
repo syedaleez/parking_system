@@ -5,7 +5,10 @@ class CustomElevatedButton extends StatelessWidget {
   final String text; // Button text
   final bool isLoading; // Indicates if the button is in a loading state
   final Color backgroundColor; // Button background color
+  final Color textColor; // Button text color
   final double fontSize; // Font size for the text
+  final Color loadingIndicatorColor; // Loading spinner color
+  final OutlinedBorder? shape; // Customizable button shape
 
   const CustomElevatedButton({
     super.key,
@@ -13,7 +16,10 @@ class CustomElevatedButton extends StatelessWidget {
     required this.text,
     this.isLoading = false, // Default to not loading
     this.backgroundColor = Colors.blueAccent, // Default background color
+    this.textColor = Colors.white, // Default text color
     this.fontSize = 18.0, // Default font size
+    this.loadingIndicatorColor = Colors.white, // Default loading spinner color
+    this.shape, // Allow customization of the button's shape
   });
 
   @override
@@ -23,16 +29,18 @@ class CustomElevatedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 50), // Full-width button
         backgroundColor: backgroundColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+        shape: shape ??
+            RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(15), // Default rounded corners
+            ),
       ),
       child: isLoading
-          ? const SizedBox(
+          ? SizedBox(
               height: 24,
               width: 24,
               child: CircularProgressIndicator(
-                color: Colors.white,
+                color: loadingIndicatorColor,
                 strokeWidth: 2.5, // Adjust spinner thickness
               ),
             )
@@ -40,7 +48,7 @@ class CustomElevatedButton extends StatelessWidget {
               text,
               style: TextStyle(
                 fontSize: fontSize,
-                color: Colors.white,
+                color: textColor,
               ),
             ),
     );

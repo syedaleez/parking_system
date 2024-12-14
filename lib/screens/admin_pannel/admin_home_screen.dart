@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parking_system/routes/route_name.dart';
-import 'package:parking_system/screens/common_widges/custom_elevated_button.dart';
-import 'package:parking_system/screens/common_widges/custom_snackbar.dart';
+import 'package:parking_system/screens/common_widgets/custom_elevated_button.dart';
+import 'package:parking_system/screens/common_widgets/custom_snackbar.dart';
 import '../../logic/admin/admin_cubit.dart';
 import '../../logic/admin/admin_state.dart';
 
@@ -17,7 +17,6 @@ class AdminHome extends StatefulWidget {
 class AdminHomeState extends State<AdminHome> {
   final _nameController = TextEditingController();
   final _rankController = TextEditingController();
-  // final Map<String, int> slotMap = {'1': 1, '2': 2, '3': 3}; //
 
   Map<String, int> slotsMap = {};
   final _slotKeyController = TextEditingController(); // For slot keys
@@ -27,7 +26,7 @@ class AdminHomeState extends State<AdminHome> {
   @override
   void initState() {
     super.initState();
-    _setupNotificationListener(); // **Setup Firestore Listener** (Highlighted change)
+    _setupNotificationListener(); // **Setup Firestore Listener**
   }
 
   void _setupNotificationListener() {
@@ -58,23 +57,24 @@ class AdminHomeState extends State<AdminHome> {
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
 
-    return BlocListener<AdminCubit, AdminState>(
-      listener: (context, state) {
-        if (state is ParkingLotCreated) {
-          CustomSnackBar.show(
-            context: context,
-            message: 'Parking Lot Created',
-          );
-        }
-        if (state is ParkingLotCreationFailure) {
-          CustomSnackBar.show(
-            context: context,
-            backgroundColor: Colors.red,
-            message: 'Failed to Create Parking Lot ',
-          );
-        }
-      },
-      child: Scaffold(
+    return BlocConsumer<AdminCubit, AdminState>(listener: (context, state) {
+      if (state is ParkingLotCreated) {
+        CustomSnackBar.show(
+          context: context,
+          message: 'Parking Lot Created',
+        );
+      }
+      if (state is ParkingLotCreationFailure) {
+        CustomSnackBar.show(
+          context: context,
+          backgroundColor: Colors.red,
+          message: 'Failed to Create Parking Lot ',
+        );
+      }
+    }, builder: (context, state) {
+      bool isLoading = state is ParkingLotLoading;
+
+      return Scaffold(
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
@@ -147,9 +147,7 @@ class AdminHomeState extends State<AdminHome> {
                       if (value == null || value.trim().isEmpty) {
                         return 'Parking lot name is required';
                       }
-                      // if (!RegExp(r'^[A-Za-z\s]+$').hasMatch(value)) {
-                      //   return 'Parking lot name must only contain letters';
-                      // }
+
                       return null;
                     },
                   ),
@@ -285,7 +283,9 @@ class AdminHomeState extends State<AdminHome> {
                           });
                         }
                       },
+                      loadingIndicatorColor: Colors.black,
                       text: "Create Parking Lot",
+                      isLoading: isLoading,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -310,8 +310,8 @@ class AdminHomeState extends State<AdminHome> {
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
 // Updated TextField Helper
