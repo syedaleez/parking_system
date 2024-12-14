@@ -107,15 +107,33 @@ class ParkingSlotList extends StatelessWidget {
               );
             }
           },
+
+          //new container
           child: Container(
             decoration: BoxDecoration(
-              color: slot.isReserved ? Colors.green : Colors.red,
-              borderRadius: BorderRadius.circular(12), // Rounded corners
+              gradient: slot.isReserved
+                  ? const LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 247, 96, 96),
+                        Color.fromARGB(255, 223, 8, 8)
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : const LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 129, 241, 135),
+                        Color.fromARGB(255, 1, 29, 9)
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+              borderRadius: BorderRadius.circular(16), // More rounded corners
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2), // Subtle shadow
-                  blurRadius: 5,
-                  offset: const Offset(2, 2),
+                  color: Colors.black.withOpacity(0.3), // Enhanced shadow
+                  blurRadius: 8,
+                  offset: const Offset(4, 4),
                 ),
               ],
             ),
@@ -123,41 +141,55 @@ class ParkingSlotList extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 Positioned.fill(
-                  child: slot.isReserved
-                      ? const Opacity(
-                          opacity: 0.3,
-                          child: Icon(
-                            Icons.check_circle_outline,
-                            size: 60,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Opacity(
-                          opacity: 0.3,
-                          child: Icon(
-                            Icons.cancel_outlined,
-                            size: 60,
-                            color: Colors.white,
-                          ),
-                        ),
+                  child: AnimatedOpacity(
+                    opacity: slot.isReserved ? 0.3 : 0.2,
+                    duration: const Duration(milliseconds: 300),
+                    child: Icon(
+                      slot.isReserved
+                          ? Icons.check_circle_rounded
+                          : Icons.cancel_rounded,
+                      size: 80,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Slot',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
                     Text(
-                      slot.data.join(', '),
+                      'Slot ${slot.id}', // Adding dynamic slot identifier
                       style: const TextStyle(
                         color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black45,
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      slot.isReserved ? 'Reserved' : 'Available',
+                      style: TextStyle(
+                        color: slot.isReserved
+                            ? const Color.fromARGB(255, 217, 238, 192)
+                            : const Color.fromARGB(255, 220, 230, 220),
                         fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      slot.data.join(', '), // Displaying additional slot data
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
                       ),
                     ),
                   ],
@@ -165,6 +197,8 @@ class ParkingSlotList extends StatelessWidget {
               ],
             ),
           ),
+
+          //end new container
         );
       },
     );
@@ -186,58 +220,3 @@ class ParkingSlotList extends StatelessWidget {
     );
   }
 }
-// void showBookingDialog(BuildContext context,  plateNumber, ParkingSlot slot) {
-//   showDialog(
-//     context: context,
-//     builder: (context) {
-//       return AlertDialog(
-//         title: const Text('Confirm Booking'),
-//         content: Text('Your number plate: $plateNumber\nSlot: $slot\nProceed?'),
-//         actions: [
-//           TextButton(
-//             onPressed: () {
-//               Navigator.pop(context); // Close the dialog
-//             },
-//             child: Text('Cancel'),
-//           ),
-//           TextButton(
-//             onPressed: () {
-//               // Book the slot
-//               FirebaseFirestore.instance
-//                   .collection('booked_slots')
-//                   .add({'number_plate': plateNumber, 'slot': slot});
-//               Navigator.pop(context); // Close the dialog
-//               ScaffoldMessenger.of(context).showSnackBar(
-//                 SnackBar(content: Text('Slot $slot booked successfully!')),
-//               );
-//             },
-//             child: Text('OK'),
-//           ),
-//         ],
-//       );
-//     },
-//   );
-// }
-// Future<String?> fetchPlateNumber(String userId) async {
-//   try {
-//     // Fetch user document from Firestore
-//     DocumentSnapshot userDoc =
-//         await FirebaseFirestore.instance.collection('users').doc(userId).get();
-
-//     if (userDoc.exists) {
-//       // Extract the plate number field
-//       // final numberPlate = fetchPlateNumber(userId);
-//       showBookingDialog(context, numberPlate, slots);
-//       return userDoc.get('plateNumber') as String?;
-      
-//     } 
-//     else {
-//       print('User document not found');
-//       return null;
-//     }
-//   } catch (e) {
-//     print('Error fetching plate number: $e');
-//     return null;
-//   }
-// }
-

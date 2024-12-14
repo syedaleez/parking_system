@@ -145,33 +145,6 @@ class BookedSlotsTab extends StatelessWidget {
       return 'Invalid Date';
     }
   }
-
-  // /// Show Exit Confirmation Dialog
-  // void _showExitDialog(BuildContext context, int slotId) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return AlertDialog(
-  //         title: const Text('Exit Slot'),
-  //         content: const Text('Are you sure you want to exit this slot?'),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () => Navigator.of(context).pop(),
-  //             child: const Text('Cancel'),
-  //           ),
-  //           TextButton(
-  //             onPressed: () async {
-  //               Navigator.of(context).pop();
-  //               // Trigger exit logic
-  //               await context.read<ParkingCubit>().exitSlot(slotId);
-  //             },
-  //             child: const Text('Confirm'),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 }
 
 
