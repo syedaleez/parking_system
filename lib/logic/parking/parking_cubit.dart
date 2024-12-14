@@ -1,5 +1,7 @@
 //new today for parking slotsss
 
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,51 +9,52 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
-import '../models/parking_slot_model.dart';
+import '../../models/parking_slot_model.dart';
+import 'parking_state.dart';
 
-class ParkingState {}
+// class ParkingState {}
 
-class ParkingLoading extends ParkingState {}
+// class ParkingLoading extends ParkingState {}
 
-class ParkingSuccess extends ParkingState {
-  final String message;
+// class ParkingSuccess extends ParkingState {
+//   final String message;
 
-  ParkingSuccess(this.message);
-}
+//   ParkingSuccess(this.message);
+// }
 
-class ParkingPlateNumberFetched extends ParkingState {
-  final String numberPlate;
-  ParkingPlateNumberFetched(this.numberPlate);
-}
+// class ParkingPlateNumberFetched extends ParkingState {
+//   final String numberPlate;
+//   ParkingPlateNumberFetched(this.numberPlate);
+// }
 
-class NotificationUpdated extends ParkingState {
-  final int notificationCount;
-  NotificationUpdated(this.notificationCount);
-}
+// class NotificationUpdated extends ParkingState {
+//   final int notificationCount;
+//   NotificationUpdated(this.notificationCount);
+// }
 
-class ParkingLoaded extends ParkingState {
-  final List<ParkingSlot> parkingSlots;
+// class ParkingLoaded extends ParkingState {
+//   final List<ParkingSlot> parkingSlots;
 
-  ParkingLoaded(
-    this.parkingSlots,
-  ); // Named parameters
-}
+//   ParkingLoaded(
+//     this.parkingSlots,
+//   ); // Named parameters
+// }
 
-class BookedSlotsLoaded extends ParkingState {
-  final List<ParkingSlot> bookedSlots;
-  BookedSlotsLoaded(this.bookedSlots);
-}
+// class BookedSlotsLoaded extends ParkingState {
+//   final List<ParkingSlot> bookedSlots;
+//   BookedSlotsLoaded(this.bookedSlots);
+// }
 
-class AdminBookedSlotsLoaded extends ParkingState {
-  final List<Map<String, dynamic>> bookedSlots;
+// class AdminBookedSlotsLoaded extends ParkingState {
+//   final List<Map<String, dynamic>> bookedSlots;
 
-  AdminBookedSlotsLoaded(this.bookedSlots);
-}
+//   AdminBookedSlotsLoaded(this.bookedSlots);
+// }
 
-class ParkingError extends ParkingState {
-  final String errorMessage;
-  ParkingError(this.errorMessage);
-}
+// class ParkingError extends ParkingState {
+//   final String errorMessage;
+//   ParkingError(this.errorMessage);
+// }
 
 class ParkingCubit extends Cubit<ParkingState> {
   ParkingCubit() : super(ParkingLoading());
@@ -62,7 +65,7 @@ class ParkingCubit extends Cubit<ParkingState> {
   Set<int> bookedSlotIds = {}; // Keep track of booked slots globally
   int notificationCount = 0;
 
-//updated monitor wala function
+  //updated monitor wala function
 
   Future<void> fetchAndMonitorSlots() async {
     try {
@@ -105,7 +108,7 @@ class ParkingCubit extends Cubit<ParkingState> {
     }
   }
 
-//function monitor wala
+//function monitor
 
   /// Update Slot Availability Based on Booked Slots
   void _updateSlotAvailability() {
@@ -217,10 +220,6 @@ class ParkingCubit extends Cubit<ParkingState> {
     }
   }
 
-  //all booked slots work end
-
-  //endddddddddd
-
   // / Book a Slot
   Future<void> bookSlot(
       int slotId, String plateNumber, int vehicleSizeId) async {
@@ -239,7 +238,7 @@ class ParkingCubit extends Cubit<ParkingState> {
       );
 
       if (response.statusCode == 201) {
-        print('Vehicle parked successfully.');
+        log('Vehicle parked successfully.');
         final responseData = json.decode(response.body);
 
         final ticketId = responseData['ticketId'];
@@ -331,10 +330,10 @@ class ParkingCubit extends Cubit<ParkingState> {
               .doc(slotId.toString())
               .delete();
         } else {
-          print('data not deleted from the booked slots');
+          log('data not deleted from the booked slots');
         }
 
-        print('Vehicle exited successfully.');
+        log('Vehicle exited successfully.');
         fetchBookedSlots();
 
         // Update the local parking slots to mark the slot as not reserved
@@ -352,90 +351,6 @@ class ParkingCubit extends Cubit<ParkingState> {
       emit(ParkingError('Error during exit: $e'));
     }
   }
-
-  //exit slot end
-
-//updated function to post vehicle vechiele
-//   Future<void> bookSlot(
-//       int slotId, String plateNumber, int vehicleSizeId) async {
-//     try {
-//       emit(ParkingLoading());
-
-//       // API Call to park vehicle
-//       final response = await http.post(
-//         Uri.parse('http://192.168.10.23:5005/vehicle/park'),
-//         headers: {'Content-Type': 'application/json'},
-//         body: json.encode({
-//           'vehicleSizeId': vehicleSizeId,
-//           'plateNumber': plateNumber,
-//           'parkingLotId': slotId,
-//         }),
-//       );
-
-//       if (response.statusCode == 201) {
-//         print('Vehicle parked successfully.');
-//         final responseData = json.decode(response.body);
-//         final ticketId =
-//             responseData['ticketId']; // Extract ticketId from response
-
-//         // Update global booked slots in Firestore
-//         final bookingRef = _firestore.collection('booked_slots').doc('$slotId');
-//         await bookingRef.set({
-//           'slotId': slotId,
-//           'plateNumber': plateNumber,
-//           'userId': _firebaseAuth.currentUser?.uid,
-//           'ticketId': ticketId, // Save ticketId for future reference
-//           'timestamp': FieldValue.serverTimestamp(),
-//         });
-
-//         // Update user-specific booking record
-//         final userId = _firebaseAuth.currentUser?.uid;
-//         if (userId != null) {
-//           final userBookingRef = _firestore
-//               .collection('user_bookings')
-//               .doc(userId)
-//               .collection('bookings')
-//               .doc('$slotId');
-//           await userBookingRef.set({
-//             'slotId': slotId,
-//             'plateNumber': plateNumber,
-//             'ticketId': ticketId,
-//             'timestamp': FieldValue.serverTimestamp(),
-//           });
-//         }
-
-//         // Update local slot status
-//         final index = slots.indexWhere((slot) => slot.id == slotId);
-//         if (index != -1) {
-//           slots[index] = slots[index].copyWith(isReserved: true);
-//         }
-
-//         emit(ParkingSuccess('Slot booked successfully.'));
-//         fetchAndMonitorSlots(); // Refresh slots
-//       } else {
-//         emit(ParkingError(
-//             'Failed to park vehicle. Status code: ${response.statusCode}'));
-//       }
-//     } catch (e) {
-//       emit(ParkingError('Error parking vehicle: $e'));
-//     }
-//   }
-
-// //function to post data in exit API also in .....
 }
 
-extension on ParkingSlot {
-  ParkingSlot copyWith({bool? isReserved}) {
-    return ParkingSlot(
-      id: this.id,
-      parkingLotId: this.parkingLotId,
-      parkingLotRank: this.parkingLotRank,
-      slotSizeId: this.slotSizeId,
-      data: this.data,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      isReserved: isReserved ?? this.isReserved,
-      plateNumber: this.plateNumber,
-    );
-  }
-}
+extension on ParkingSlot {}

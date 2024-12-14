@@ -2,11 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../cubit/auth_cubit.dart';
-
 class AuthRepository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   //check role for admin aur userr
@@ -54,7 +52,7 @@ class AuthRepository {
           email: email, password: password);
       return true;
     } catch (e) {
-      throw Exception('Failed to sign in: ${e}');
+      throw Exception('Failed to sign in: $e');
     }
   }
 

@@ -1,30 +1,12 @@
-// import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:developer';
 
-// import '../repository/user_repo.dart';
-// import '../states/user_state.dart';
-
-// class UserCubit extends Cubit<UserState> {
-//   final UserRepository userRepository;
-
-//   UserCubit(this.userRepository) : super(UserInitial());
-
-//   Future<void> fetchUserData() async {
-//     emit(UserLoading());
-//     try {
-//       final data = await userRepository.getUserData();
-//       emit(UserDataLoaded(data));
-//     } catch (e) {
-//       emit(UserError('Failed to load user data: ${e.toString()}'));
-//     }
-//   }
-// }
-
-//new vode
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../repository/user_repository.dart';
-import '../states/user_state.dart';
+import '../../repository/user_repository.dart';
+import '../parking/parking_cubit.dart';
+import 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
   final UserRepository userRepository;
@@ -34,8 +16,6 @@ class UserCubit extends Cubit<UserState> {
   final userId = FirebaseAuth.instance.currentUser?.uid;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-//newwwwwwwst
 
   Future<void> fetchUserProfile() async {
     try {
@@ -54,7 +34,7 @@ class UserCubit extends Cubit<UserState> {
           data['createdAt'] = (data['createdAt'] as Timestamp).toDate();
         }
 
-        print('Fetched User Data: $data'); // Debug log
+        log('Fetched User Data: $data'); // Debug log
         emit(UserDataLoaded(data)); // Emit the correct state with user data
       } else {
         throw Exception('User not found');
@@ -63,5 +43,38 @@ class UserCubit extends Cubit<UserState> {
       emit(UserError(
           'Failed to load profile: ${e.toString()}')); // Ensure error state is emitted
     }
+  }
+
+  //exit
+
+  /// Show Exit Confirmation Dialog
+  void showExitDialog(BuildContext context, int slotId) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Exit Slot'),
+          content: const Text('Are you sure you want to exit this slot?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                // Trigger exit logic
+                await context.read<ParkingCubit>().exitSlot(slotId);
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void completeExit(int slotId) {
+    emit(ParkingExitConfirmed(slotId));
   }
 }

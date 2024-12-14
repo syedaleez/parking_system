@@ -2,10 +2,10 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking_system/cubit/user_cubit.dart';
-import 'package:parking_system/navigation/route_name.dart';
+import 'package:parking_system/logic/user/user_cubit.dart';
+import 'package:parking_system/routes/route_name.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../repository/auth_repository.dart';
+import '../../repository/auth_repository.dart';
 
 // States
 class AuthState {}
@@ -72,13 +72,13 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       bool isAuthenticated = await authRepository.login(email, password);
       final role = await authRepository.checkRole(email);
-      print('Role@@@@@@: $role');
 
       if (role == 'admin') {
         emit(AdminAuthenticated());
-        Navigator.pushReplacementNamed(context, adminHome);
+        if (context.mounted) {
+          Navigator.pushReplacementNamed(context, adminHome);
+        }
         //
-        print('trueeeeee');
         return;
       } else {
         emit(UserAuthenticated()); // User role detected
@@ -96,6 +96,7 @@ class AuthCubit extends Cubit<AuthState> {
         final userId = FirebaseAuth.instance.currentUser?.uid;
         if (userId != null) {
           // Use context to call UserCubit
+          // ignore: use_build_context_synchronously
           context.read<UserCubit>().fetchUserProfile();
         }
 
@@ -115,23 +116,10 @@ class AuthCubit extends Cubit<AuthState> {
     await _firebaseAuth.signOut();
   }
 
-  // Future<void> signInWithGoogle() async {
-  //   // emit(AuthLoading());
-  //   try {
-  //     await authRepository.signInWithGoogle();
-  //     emit(AuthSuccess());
-  //   } catch (e) {
-  //     emit(AuthFailure(e.toString()));
-  //   }
-  // }
-
   Future<void> signInWithGoogle() async {
     emit(AuthLoading());
     try {
       final userCredential = await authRepository.signInWithGoogle();
-      // final userId = userCredential.user!.uid;
-      // // final  userDetails=   Map userDetails;
-      // final userData = await authRepository.getUserDetails(userId);
 
       // Check if additional user details are required
       final userExists =

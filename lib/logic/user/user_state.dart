@@ -1,7 +1,13 @@
- class UserState {}
+class UserState {}
 
 class UserInitial extends UserState {}
+
 class UserLoading extends UserState {}
+
+class ParkingExitConfirmed extends UserState {
+  final int slotId;
+  ParkingExitConfirmed(this.slotId);
+}
 // class UserDataLoaded extends UserState {
 //   final dynamic data;
 //   UserDataLoaded(this.data);

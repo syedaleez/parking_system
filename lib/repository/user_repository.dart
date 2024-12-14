@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -17,7 +19,7 @@ class UserRepository {
           await _firestore.collection('users').doc(user.uid).get();
 
       if (doc.exists) {
-        print(doc.data());
+        log(doc.data().toString());
         return doc.data() as Map<String, dynamic>;
       } else {
         throw Exception('User profile not found in Firestore');

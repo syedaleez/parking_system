@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking_system/navigation/route_name.dart';
-import '../../../cubit/auth_cubit.dart';
-import '../../../cubit/user_cubit.dart';
-import '../../../states/user_state.dart';
+import 'package:parking_system/routes/route_name.dart';
+import '../../../logic/authenticate/auth_cubit.dart';
+import '../../../logic/user/user_cubit.dart';
+import '../../../logic/user/user_state.dart';
 // import '../cubit/user_cubit.dart';
 // import '../states/user_state.dart'; // Import your user states
 
@@ -18,7 +18,7 @@ class UserProfileTab extends StatelessWidget {
       body: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {
           if (state is UserLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (state is UserDataLoaded) {
             final userData = state.userData;
             return Stack(
@@ -60,7 +60,7 @@ class UserProfileTab extends StatelessWidget {
                         style: const TextStyle(
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
                         'Email: ${userData['email'] ?? 'N/A'}',
                         style: const TextStyle(fontSize: 21),
@@ -68,12 +68,12 @@ class UserProfileTab extends StatelessWidget {
                       const SizedBox(height: 12),
                       Text(
                         'Phone Number: ${userData['phoneNumber'] ?? 'N/A'}',
-                        style: TextStyle(fontSize: 21),
+                        style: const TextStyle(fontSize: 21),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text(
                         'State: ${userData['state'] ?? 'N/A'}',
-                        style: TextStyle(fontSize: 21),
+                        style: const TextStyle(fontSize: 21),
                       ),
                     ],
                   ),
@@ -82,10 +82,11 @@ class UserProfileTab extends StatelessWidget {
                 // Logout Button
                 Positioned(
                   top: MediaQuery.of(context).size.height *
-                      0.01, // Adjusts top position based on screen height
-                  right: MediaQuery.of(context).size.width * 0.05,
+                      0.0, // Adjusts top position based on screen height
+                  right: MediaQuery.of(context).size.width * 0.0,
                   child: IconButton(
-                    icon: Icon(Icons.logout_outlined, color: Colors.blueAccent),
+                    icon: const Icon(Icons.logout_outlined,
+                        color: Colors.blueAccent),
                     onPressed: () {
                       context.read<AuthCubit>().logout();
                       Navigator.pushReplacementNamed(context, login);
@@ -97,10 +98,10 @@ class UserProfileTab extends StatelessWidget {
           } else if (state is UserError) {
             return Center(
               child: Text(state.error,
-                  style: TextStyle(color: Colors.red, fontSize: 18)),
+                  style: const TextStyle(color: Colors.red, fontSize: 18)),
             );
           } else {
-            return Center(
+            return const Center(
               child: Text(
                 'No user data available',
                 style: TextStyle(fontSize: 18),

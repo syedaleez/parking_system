@@ -8,13 +8,13 @@ class CustomElevatedButton extends StatelessWidget {
   final double fontSize; // Font size for the text
 
   const CustomElevatedButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.text,
     this.isLoading = false, // Default to not loading
     this.backgroundColor = Colors.blueAccent, // Default background color
     this.fontSize = 18.0, // Default font size
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

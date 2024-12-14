@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class NotificationsScreen extends StatelessWidget {
+  const NotificationsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,18 +65,18 @@ class NotificationsScreen extends StatelessWidget {
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.3),
                         blurRadius: 5,
-                        offset: Offset(0, 3), // Shadow position
+                        offset: const Offset(0, 3), // Shadow position
                       ),
                     ],
                   ),
                   child: ListTile(
-                    leading: CircleAvatar(
+                    leading: const CircleAvatar(
                       backgroundColor: Colors.blueAccent,
                       child: Icon(Icons.notifications, color: Colors.white),
                     ),
                     title: Text(
                       'Slot ID: ${notification['slotId']}',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
                       'Plate: ${notification['plateNumber']}',
