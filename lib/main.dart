@@ -1,47 +1,46 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking_system/cubit/admin_cubit.dart';
-import 'package:parking_system/cubit/user_cubit.dart';
-import 'package:parking_system/repository/admin_repository.dart';
-import 'package:parking_system/repository/user_repository.dart';
-import 'package:parking_system/screens/dashboard/navBar/user_profile_tab.dart';
-import 'cubit/auth_cubit.dart';
-import 'cubit/parking_cubit.dart';
-import 'cubit/register_cubit.dart';
-import 'navigation/route_page.dart';
+import 'package:parking_system/logic/admin/admin_cubit.dart';
+import 'package:parking_system/logic/user/user_cubit.dart';
+import 'package:parking_system/screens/dashboard/navigation_bar/user_profile_tab.dart';
+import 'dependency_injection/locator.dart';
+import 'logic/authenticate/auth_cubit.dart';
+import 'logic/parking/parking_cubit.dart';
+import 'logic/authenticate/register_cubit.dart';
+import 'routes/route_page.dart';
 import 'repository/auth_repository.dart';
-import 'navigation/route_name.dart';
+import 'routes/route_name.dart';
 
 //
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  setupLocator();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final AuthRepository authRepository = AuthRepository();
-  final UserCubit userCubit = UserCubit(UserRepository());
-  final UserRepository userRepository = UserRepository();
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthCubit>(
-          create: (context) => AuthCubit(authRepository, userCubit),
+          create: (context) => AuthCubit(
+            locator<AuthRepository>(),
+            locator<UserCubit>(),
+          ),
         ),
         BlocProvider<RegisterCubit>(
-          create: (context) => RegisterCubit(authRepository),
+          create: (context) => RegisterCubit(locator<AuthRepository>()),
         ),
-        BlocProvider<AdminCubit>(
-          create: (context) => AdminCubit(AdminRepository()),
-        ),
+        BlocProvider<AdminCubit>(create: (context) => locator<AdminCubit>()),
         BlocProvider(
-          create: (context) => UserCubit(userRepository),
-          child: UserProfileTab(),
+          create: (context) => locator<UserCubit>(),
+          child: const UserProfileTab(),
         ),
         BlocProvider<ParkingCubit>(
           create: (context) =>

@@ -53,16 +53,15 @@ class ParkingSlot {
   // Copy with method for immutability
   ParkingSlot copyWith({bool? isReserved}) {
     return ParkingSlot(
-      id: this.id,
-      parkingLotId: this.parkingLotId,
-      parkingLotRank: this.parkingLotRank,
-      slotSizeId: this.slotSizeId,
-      data: this.data,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
+      id: id,
+      parkingLotId: parkingLotId,
+      parkingLotRank: parkingLotRank,
+      slotSizeId: slotSizeId,
+      data: data,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
       isReserved: isReserved ?? this.isReserved,
-      plateNumber: plateNumber ??
-          this.plateNumber, // If no value is passed, retain xurrent value
+      plateNumber: plateNumber, // If no value is passed, retain xurrent value
     );
   }
 }

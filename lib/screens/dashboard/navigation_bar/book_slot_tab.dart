@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart'; // For formatting dates
 import 'package:shimmer/shimmer.dart';
-import '../../../cubit/parking_cubit.dart';
+import '../../../logic/parking/parking_cubit.dart';
+import '../../../logic/parking/parking_state.dart';
+import '../../../logic/user/user_cubit.dart';
 
 class BookedSlotsTab extends StatelessWidget {
+  const BookedSlotsTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     context
@@ -14,7 +18,6 @@ class BookedSlotsTab extends StatelessWidget {
     return BlocBuilder<ParkingCubit, ParkingState>(
       builder: (context, state) {
         if (state is ParkingLoading) {
-          // return Center(child: CircularProgressIndicator());
           return ListView.builder(
             itemCount: 6, // Placeholder count for shimmer effect
             itemBuilder: (context, index) => Shimmer.fromColors(
@@ -35,7 +38,7 @@ class BookedSlotsTab extends StatelessWidget {
           );
         } else if (state is BookedSlotsLoaded) {
           if (state.bookedSlots.isEmpty) {
-            return Center(child: Text('No booked slots available.'));
+            return const Center(child: Text('No booked slots available.'));
           }
 
           return ListView.builder(
@@ -55,7 +58,7 @@ class BookedSlotsTab extends StatelessWidget {
                       BoxShadow(
                         color: Colors.grey.shade300,
                         blurRadius: 6,
-                        offset: Offset(0, 3),
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
@@ -75,15 +78,16 @@ class BookedSlotsTab extends StatelessWidget {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                             height: 4), // Adds space between title and subtitle
                         Text(
                           'Reserved on: ${_formatDate(slot.createdAt)}',
-                          style: TextStyle(fontSize: 14, color: Colors.black87),
+                          style: const TextStyle(
+                              fontSize: 14, color: Colors.black87),
                         ),
                         Text(
-                          'Vehicle Plate: ${slot.plateNumber ?? "No Plate"}',
-                          style: TextStyle(
+                          'Vehicle Plate: ${slot.plateNumber}',
+                          style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
                             color: Colors.black87,
@@ -92,8 +96,12 @@ class BookedSlotsTab extends StatelessWidget {
                       ],
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.cancel, color: Colors.red, size: 28),
-                      onPressed: () => _showExitDialog(context, slot.id),
+                      icon:
+                          const Icon(Icons.cancel, color: Colors.red, size: 28),
+                      onPressed: () => context
+                          .read<UserCubit>()
+                          .showExitDialog(context, slot.id),
+                      //  showExitDialog(context, slot.id),
                     ),
                   ),
                 ),
@@ -102,8 +110,27 @@ class BookedSlotsTab extends StatelessWidget {
           );
         } else if (state is ParkingError) {
           return Center(child: Text(state.errorMessage));
+        } else {
+          // return const Center(child: Text('No data to display.'));
+          return ListView.builder(
+            itemCount: 6, // Placeholder count for shimmer effect
+            itemBuilder: (context, index) => Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8), //
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  height: 100, // Height of the shimmer box
+                ),
+              ),
+            ),
+          );
         }
-        return Center(child: Text('No data to display.'));
       },
     );
   }
@@ -117,33 +144,6 @@ class BookedSlotsTab extends StatelessWidget {
     } catch (e) {
       return 'Invalid Date';
     }
-  }
-
-  /// Show Exit Confirmation Dialog
-  void _showExitDialog(BuildContext context, int slotId) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Exit Slot'),
-          content: Text('Are you sure you want to exit this slot?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
-                // Trigger exit logic
-                await context.read<ParkingCubit>().exitSlot(slotId);
-              },
-              child: Text('Confirm'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
 

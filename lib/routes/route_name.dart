@@ -5,6 +5,7 @@ const String home = '/home';
 const String viewUser = '/view_user';
 const String adminHome = '/admin_home';
 const String notification = '/notifications';
+const String homeTab = '/home_tab';
 // const String register = '/register';
 // const String register = '/register';
 

@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../cubit/auth_cubit.dart';
+import '../../logic/authenticate/auth_cubit.dart';
 
 void showAdditionalDetailsForm(BuildContext context, String userId) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      final _nameController = TextEditingController();
-      final _phoneController = TextEditingController();
-      final _stateController = TextEditingController();
+      final nameController = TextEditingController();
+      final phoneController = TextEditingController();
+      final stateController = TextEditingController();
 
       return AlertDialog(
-        title: Text('Complete Your Profile'),
+        title: const Text('Complete Your Profile'),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
               ),
               TextField(
-                controller: _phoneController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
+                controller: phoneController,
+                decoration: const InputDecoration(labelText: 'Phone Number'),
               ),
               TextField(
-                controller: _stateController,
-                decoration: InputDecoration(labelText: 'State'),
+                controller: stateController,
+                decoration: const InputDecoration(labelText: 'State'),
               ),
             ],
           ),
@@ -35,9 +35,9 @@ void showAdditionalDetailsForm(BuildContext context, String userId) {
         actions: [
           ElevatedButton(
             onPressed: () async {
-              final name = _nameController.text;
-              final phone = _phoneController.text;
-              final state = _stateController.text;
+              final name = nameController.text;
+              final phone = phoneController.text;
+              final state = stateController.text;
 
               if (name.isNotEmpty && phone.isNotEmpty && state.isNotEmpty) {
                 await context.read<AuthCubit>().saveAdditionalDetails(userId, {
@@ -45,14 +45,15 @@ void showAdditionalDetailsForm(BuildContext context, String userId) {
                   'phone': phone,
                   'state': state,
                 });
+                // ignore: use_build_context_synchronously
                 Navigator.pop(context); // Close the dialog
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Please fill out all fields')),
+                  const SnackBar(content: Text('Please fill out all fields')),
                 );
               }
             },
-            child: Text('Save'),
+            child: const Text('Save'),
           ),
         ],
       );

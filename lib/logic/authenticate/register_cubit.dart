@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../repository/auth_repository.dart';
+import '../../repository/auth_repository.dart';
 
 // States
 class RegisterState {}

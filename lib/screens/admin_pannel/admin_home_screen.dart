@@ -1,21 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:parking_system/navigation/route_name.dart';
-import 'package:parking_system/screens/common_widges/custom_elevated_button.dart';
-import 'package:parking_system/screens/common_widges/custom_snackbar.dart';
-import '../../cubit/admin_cubit.dart';
-import '../../states/admin_state.dart';
+import 'package:parking_system/routes/route_name.dart';
+import 'package:parking_system/screens/common_widgets/custom_elevated_button.dart';
+import 'package:parking_system/screens/common_widgets/custom_snackbar.dart';
+import '../../logic/admin/admin_cubit.dart';
+import '../../logic/admin/admin_state.dart';
 
 class AdminHome extends StatefulWidget {
+  const AdminHome({super.key});
+
   @override
-  _AdminHomeState createState() => _AdminHomeState();
+  AdminHomeState createState() => AdminHomeState();
 }
 
-class _AdminHomeState extends State<AdminHome> {
+class AdminHomeState extends State<AdminHome> {
   final _nameController = TextEditingController();
   final _rankController = TextEditingController();
-  final Map<String, int> _slotMap = {'1': 1, '2': 2, '3': 3}; //
 
   Map<String, int> slotsMap = {};
   final _slotKeyController = TextEditingController(); // For slot keys
@@ -25,7 +26,7 @@ class _AdminHomeState extends State<AdminHome> {
   @override
   void initState() {
     super.initState();
-    _setupNotificationListener(); // **Setup Firestore Listener** (Highlighted change)
+    _setupNotificationListener(); // **Setup Firestore Listener**
   }
 
   void _setupNotificationListener() {
@@ -54,31 +55,32 @@ class _AdminHomeState extends State<AdminHome> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
 
-    return BlocListener<AdminCubit, AdminState>(
-      listener: (context, state) {
-        if (state is ParkingLotCreated) {
-          CustomSnackBar.show(
-            context: context,
-            message: 'Parking Lot Created',
-          );
-        }
-        if (state is ParkingLotCreationFailure) {
-          CustomSnackBar.show(
-            context: context,
-            backgroundColor: Colors.red,
-            message: 'Failed to Create Parking Lot ',
-          );
-        }
-      },
-      child: Scaffold(
+    return BlocConsumer<AdminCubit, AdminState>(listener: (context, state) {
+      if (state is ParkingLotCreated) {
+        CustomSnackBar.show(
+          context: context,
+          message: 'Parking Lot Created',
+        );
+      }
+      if (state is ParkingLotCreationFailure) {
+        CustomSnackBar.show(
+          context: context,
+          backgroundColor: Colors.red,
+          message: 'Failed to Create Parking Lot ',
+        );
+      }
+    }, builder: (context, state) {
+      bool isLoading = state is ParkingLotLoading;
+
+      return Scaffold(
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
               Navigator.pushReplacementNamed(context, login);
             },
-            icon: Icon(Icons.logout_sharp),
+            icon: const Icon(Icons.logout_sharp),
             color: Colors.white,
           ),
           title: const Text(
@@ -119,7 +121,7 @@ class _AdminHomeState extends State<AdminHome> {
           ],
         ),
         body: Form(
-          key: _formKey,
+          key: formKey,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
@@ -134,7 +136,7 @@ class _AdminHomeState extends State<AdminHome> {
                       color: Colors.black87,
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Parking Lot Name Field
                   _buildTextField(
@@ -145,13 +147,11 @@ class _AdminHomeState extends State<AdminHome> {
                       if (value == null || value.trim().isEmpty) {
                         return 'Parking lot name is required';
                       }
-                      // if (!RegExp(r'^[A-Za-z\s]+$').hasMatch(value)) {
-                      //   return 'Parking lot name must only contain letters';
-                      // }
+
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Rank Field
                   _buildTextField(
@@ -167,57 +167,14 @@ class _AdminHomeState extends State<AdminHome> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
                   // Define Slots Section
-                  Text(
+                  const Text(
                     'Define Slots',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
-
-                  // Slot Input Fields
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: _buildDropdown(
-                  //         hint: 'Slot Key (e.g., "1")',
-                  //         items: List.generate(
-                  //             10, (index) => (index + 1).toString()),
-                  //         onSelected: (value) {
-                  //           _slotKeyController.text = value ?? '';
-                  //         },
-                  //       ),
-                  //     ),
-                  //     SizedBox(width: 5),
-                  //     Expanded(
-                  //       child: _buildDropdown(
-                  //         hint: 'Spaces (e.g., "5")',
-                  //         items: List.generate(
-                  //             20, (index) => (index + 1).toString()),
-                  //         onSelected: (value) {
-                  //           _slotValueController.text = value ?? '';
-                  //         },
-                  //       ),
-                  //     ),
-                  //     IconButton(
-                  //       icon: Icon(Icons.add, color: Colors.blueAccent),
-                  //       onPressed: () {
-                  //         final key = _slotKeyController.text.trim();
-                  //         final value =
-                  //             int.tryParse(_slotValueController.text.trim()) ??
-                  //                 0;
-                  //         if (key.isNotEmpty && value > 0) {
-                  //           setState(() {
-                  //             slotsMap[key] = value;
-                  //           });
-                  //           _slotKeyController.clear();
-                  //           _slotValueController.clear();
-                  //         }
-                  //       },
-                  //     ),
-                  //   ],
-                  // ),
+                  const SizedBox(height: 10),
 
                   Column(
                     children: [
@@ -233,7 +190,8 @@ class _AdminHomeState extends State<AdminHome> {
                           },
                         ),
                       ),
-                      SizedBox(height: 10), // Add spacing between the dropdowns
+                      const SizedBox(
+                          height: 10), // Add spacing between the dropdowns
                       SizedBox(
                         width: double.infinity,
                         child: _buildDropdown(
@@ -245,7 +203,8 @@ class _AdminHomeState extends State<AdminHome> {
                           },
                         ),
                       ),
-                      SizedBox(height: 10), // Add spacing before the button
+                      const SizedBox(
+                          height: 10), // Add spacing before the button
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -277,7 +236,7 @@ class _AdminHomeState extends State<AdminHome> {
                     ],
                   ),
 
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
                   // Display Slots
                   if (slotsMap.isNotEmpty)
@@ -286,7 +245,8 @@ class _AdminHomeState extends State<AdminHome> {
                       children: slotsMap.entries.map((entry) {
                         return Chip(
                           label: Text('${entry.key}: ${entry.value}'),
-                          deleteIcon: Icon(Icons.close, color: Colors.red),
+                          deleteIcon:
+                              const Icon(Icons.close, color: Colors.red),
                           onDeleted: () {
                             setState(() {
                               slotsMap.remove(entry.key);
@@ -295,12 +255,12 @@ class _AdminHomeState extends State<AdminHome> {
                         );
                       }).toList(),
                     ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
                   Center(
                     child: CustomElevatedButton(
                       onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
+                        if (formKey.currentState?.validate() ?? false) {
                           if (slotsMap.length != 3) {
                             CustomSnackBar.show(
                               context: context,
@@ -323,23 +283,35 @@ class _AdminHomeState extends State<AdminHome> {
                           });
                         }
                       },
+                      loadingIndicatorColor: Colors.black,
                       text: "Create Parking Lot",
+                      isLoading: isLoading,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   CustomElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/view_user');
+                      Navigator.pushNamed(context, viewUser);
                     },
                     text: "View User Details",
                   ),
+                  const SizedBox(height: 10),
+
+                  // CustomElevatedButton(
+                  //   onPressed: () {
+                  //     // Navigator.pushNamed(context, jhjhjhjhj);
+                  //     Navigator.push(context,
+                  //         MaterialPageRoute(builder: (context) => HomeTab()));
+                  //   },
+                  //   text: "View All Slots",
+                  // ),
                 ],
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
 // Updated TextField Helper
@@ -356,7 +328,7 @@ class _AdminHomeState extends State<AdminHome> {
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         prefixIcon: Icon(icon),
       ),
     );

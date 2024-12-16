@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../models/parking_lot_model.dart';
-import '../repository/admin_repository.dart';
-import '../states/admin_state.dart';
+import '../../models/parking_lot_model.dart';
+import '../../repository/admin_repository.dart';
+import 'admin_state.dart';
 
 class AdminAuthenticated extends AdminState {}
 
@@ -21,23 +23,20 @@ class AdminCubit extends Cubit<AdminState> {
     if (name.isEmpty || rank <= 0 || nSlotsKey.isEmpty) {
       emit(ParkingLotCreationFailure(
           'All fields are required, and rank must be positive.'));
-      print("All fields are reuired");
+      log("All fields are reuired");
       return;
     }
 
     final parkingLot = ParkingLot(name: name, rank: rank, nSlotsKey: nSlotsKey);
 
-    emit(ParkingLotCreated());
+    emit(ParkingLotLoading());
     try {
       await adminRepository.createParkingLot(parkingLot);
       emit(ParkingLotCreated());
-      print("parking lot createdddddddddddddddddddddd");
+      log("parking lot createddddddddddddd");
     } catch (e) {
-      emit(ParkingLotCreationFailure(
-
-          //  print("faileddddddddddddddd");
-          e.toString()));
-      print("failedddddddddddddd");
+      emit(ParkingLotCreationFailure(e.toString()));
+      log("failedddddddddddddd with this exception{$e}");
     }
   }
 }
